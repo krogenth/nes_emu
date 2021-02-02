@@ -1,4 +1,4 @@
-# nes_emu
+# NES_EMU
 
 An Open Source NES Emulator
 
