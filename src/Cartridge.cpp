@@ -7,7 +7,7 @@
 #include "include\io_util.h"
 #include "include\custom_exceptions.h"
 
-[[nodiscard]] Mapper* CartridgeClass::load(std::string filename) {
+[[nodiscard]] romStruct* CartridgeClass::load(std::string filename) {
 
 	//	following the nesdev.com documentation on the NES 2.0 header: https://wiki.nesdev.com/w/index.php/NES_2.0
 
@@ -64,20 +64,6 @@
 	//	since the chr section is immediately after the prg section, we can read it immediately after
 	input.read((char*)rom->chr.data(), rom->chr.size());
 
-	uint8_t mapperID = (rom->header.flags7 & 0b11110000) | ((rom->header.flags6 & 0b11110000) >> 4);
-	switch (mapperID) {
-
-	case 0: 
-		mapper = new Mapper000(rom);
-		break;
-	case 1:
-		mapper = new Mapper001(rom);
-		break;
-	default:
-		throw CartridgeException("MapperID " + std::to_string(mapperID) + " not supported");
-
-	}
-
 	/*
 		after the chr section, there is the possibility of a Miscellaneous section,
 		which can be several differe things, depending on the Mapper
@@ -86,6 +72,14 @@
 
 	input.close();
 
-	return mapper;
+	return rom;
 
 }
+
+void CartridgeClass::reset() { 
+	
+	//	Mapper is specific to the Cartridge, so let the Cartridge handle it until shared_ptr is implemented
+	delete mapper;
+	mapper = nullptr;
+
+}	

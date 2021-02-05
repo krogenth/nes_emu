@@ -5,4 +5,8 @@
 #include "mappers\Mapper000.h"
 #include "mappers\Mapper001.h"
 
+#include "..\include\custom_exceptions.h"
+
+MapperClass* selectMapper(romStruct* _rom);
+
 #endif

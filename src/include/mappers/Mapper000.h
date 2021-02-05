@@ -3,10 +3,10 @@
 
 #include "Mapper.h"
 
-class Mapper000 : public Mapper {
+class Mapper000 : public MapperClass {
 
 public:
-	Mapper000(romStruct* _rom) : Mapper(_rom) {   }
+	Mapper000(romStruct* _rom) : MapperClass(_rom) {   }
 
 	uint8_t prg_read(uint16_t address) override;
 	uint8_t chr_read(uint16_t address) override;
@@ -19,4 +19,3 @@ protected:
 };
 
 #endif
-#pragma once

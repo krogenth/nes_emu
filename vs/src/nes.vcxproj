@@ -144,8 +144,10 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\Cartridge.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
+    <ClCompile Include="..\..\src\mappers\Mapper.cpp" />
     <ClCompile Include="..\..\src\mappers\Mapper000.cpp" />
     <ClCompile Include="..\..\src\mappers\Mapper001.cpp" />
+    <ClCompile Include="..\..\src\Mapper_Collection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\include\Cartridge.h" />

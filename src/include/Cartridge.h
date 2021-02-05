@@ -5,15 +5,18 @@
 
 //	forward declare romStruct
 struct romStruct;
-class Mapper;
+class MapperClass;
 
 class CartridgeClass {
 
 public:
-	[[nodiscard]] Mapper* load(std::string filename);
+	[[nodiscard]] romStruct* load(std::string filename);
+	bool loaded() { return (mapper != nullptr); }
+	void storeMapper(MapperClass* _mapper) { mapper = _mapper; }
+	void reset();
 
 private:
-	Mapper* mapper = nullptr;
+	MapperClass* mapper = nullptr;
 
 };
 

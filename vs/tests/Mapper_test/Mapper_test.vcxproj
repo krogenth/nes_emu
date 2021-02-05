@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{d580d776-7c4a-40ee-8393-27e12fd1b8be}</ProjectGuid>
-    <RootNamespace>Cartridgetest</RootNamespace>
+    <ProjectGuid>{cfc53f76-c5c2-4e34-8678-99842883fcda}</ProjectGuid>
+    <RootNamespace>Mappertest</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -78,11 +78,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -119,7 +117,6 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,7 +144,8 @@
     <ClCompile Include="..\..\..\src\mappers\Mapper.cpp" />
     <ClCompile Include="..\..\..\src\mappers\Mapper000.cpp" />
     <ClCompile Include="..\..\..\src\mappers\Mapper001.cpp" />
-    <ClCompile Include="..\..\..\tests\Cartridge_test\Cartridge_test.cpp" />
+    <ClCompile Include="..\..\..\src\Mapper_Collection.cpp" />
+    <ClCompile Include="..\..\..\tests\Mapper_test\Mapper_test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\include\Cartridge.h" />

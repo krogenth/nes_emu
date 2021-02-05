@@ -1,7 +1,7 @@
 #ifndef EXCEPTIONS_H
 #define EXCEPTIONS_H
 
-#include <exception>	//	std::runtime_error
+#include <stdexcept>	//	std::runtime_error
 
 class CartridgeException : public std::runtime_error {
 

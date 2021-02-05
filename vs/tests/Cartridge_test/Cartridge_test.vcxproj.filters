@@ -14,7 +14,7 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="Mappers">
-      <UniqueIdentifier>{873065a4-4499-4e0d-9296-ac62acdc88ad}</UniqueIdentifier>
+      <UniqueIdentifier>{75e737c6-d1fc-4597-be4b-329919cf6e4a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -24,11 +24,14 @@
     <ClCompile Include="..\..\..\src\Cartridge.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\mappers\Mapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\mappers\Mapper000.cpp">
-      <Filter>Mappers</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\mappers\Mapper001.cpp">
-      <Filter>Mappers</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -41,6 +44,9 @@
     <ClInclude Include="..\..\..\src\include\io_util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\include\RomStruct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\src\include\mappers\Mapper.h">
       <Filter>Mappers</Filter>
     </ClInclude>
@@ -51,9 +57,6 @@
       <Filter>Mappers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\include\Mapper_Collection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\include\RomStruct.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
