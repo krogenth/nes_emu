@@ -1,0 +1,22 @@
+#ifndef MAPPER_000_H
+#define MAPPER_000_H
+
+#include "Mapper.h"
+
+class Mapper000 : public Mapper {
+
+public:
+	Mapper000(romStruct* _rom) : Mapper(_rom) {   }
+
+	uint8_t prg_read(uint16_t address) override;
+	uint8_t chr_read(uint16_t address) override;
+
+	void prg_write(uint16_t address, const uint8_t& data) override;
+	void chr_write(uint16_t address, const uint8_t& data) override;
+
+protected:
+
+};
+
+#endif
+#pragma once
