@@ -36,6 +36,12 @@
     <ClCompile Include="..\..\src\Mapper_Collection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\CPU.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\CPU_Opcodes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\include\custom_exceptions.h">
@@ -60,6 +66,12 @@
       <Filter>Mappers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\include\Mapper_Collection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\include\CPU.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\include\CPU_Opcodes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

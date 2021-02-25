@@ -25,13 +25,13 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\mappers\Mapper.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Mappers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\mappers\Mapper000.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Mappers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\mappers\Mapper001.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Mappers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

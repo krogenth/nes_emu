@@ -7,6 +7,13 @@
 
 static const std::string nesMagic = { 'N', 'E', 'S', (char)0x1A };
 
+enum tvEnum {
+
+	NTSC = 0,
+	PAL = 1
+
+};
+
 struct romHeaderStruct {
 
 	char ID[4] = { ' ', ' ', ' ', ' ' };
@@ -28,10 +35,13 @@ struct romHeaderStruct {
 struct romStruct {
 
 	romHeaderStruct header;
-	std::vector<uint8_t> prg;
-	std::vector<uint8_t> chr;
-	uint32_t prg_chunks = 0;
-	uint32_t chr_chunks = 0;
+	std::vector<uint8_t> prg_rom;
+	std::vector<uint8_t> prg_ram;
+	std::vector<uint8_t> chr_rom;
+	uint32_t prg_rom_chunks = 0;
+	uint32_t prg_ram_chunks = 0;
+	uint32_t chr_rom_chunks = 0;
+	tvEnum tvType;
 
 };
 

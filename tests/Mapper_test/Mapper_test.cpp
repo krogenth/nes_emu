@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
 	CartridgeClass Cartridge;
 	romStruct* rom = Cartridge.load("test.nes");
 	MapperClass* mapper = nullptr;
-	
+
 	try {
 
 		mapper = selectMapper(rom);
@@ -27,15 +27,14 @@ int main(int argc, char* argv[]) {
 
 	}
 
-	if (mapper != nullptr) {
-
-		delete mapper;
+	//	since the Cartridge deletes the mapper, we can just set the mapper pointer to nullptr here
+	if (mapper != nullptr)
 		mapper = nullptr;
 
-	}
-	
 	if (rom != nullptr)
 		rom = nullptr;
+
+	std::cin.get();
 
 	return EXIT_SUCCESS;
 

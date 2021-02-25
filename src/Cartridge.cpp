@@ -39,19 +39,27 @@
 	if ((rom->header.flags7 & 0b00001100) == 0b00001000) {
 
 		//	we want to store the number of chunks each segment has as well for later use with the Mapper
-		rom->prg_chunks = (uint32_t)rom->header.prgRomSizeLSB | ((uint32_t)(rom->header.prgChrSizeMSB & 0b00001111) << 8);
-		rom->chr_chunks = (uint32_t)rom->header.chrRomSizeLSB | ((uint32_t)(rom->header.prgChrSizeMSB & 0b11110000) << 4);
-		rom->prg.resize((size_t)rom->prg_chunks * 0x4000);		//	0x4000 == 16KB
-		rom->chr.resize((size_t)rom->chr_chunks * 0x2000);		//	0x2000 == 8KB
+		rom->prg_rom_chunks = (uint32_t)rom->header.prgRomSizeLSB | ((uint32_t)(rom->header.prgChrSizeMSB & 0b00001111) << 8);
+		rom->chr_rom_chunks = (uint32_t)rom->header.chrRomSizeLSB | ((uint32_t)(rom->header.prgChrSizeMSB & 0b11110000) << 4);
+		rom->prg_rom.resize((size_t)rom->prg_rom_chunks * 0x4000);		//	0x4000 == 16KB
+		rom->chr_rom.resize((size_t)rom->chr_rom_chunks * 0x2000);		//	0x2000 == 8KB
+		(rom->header.timing & 0x03) ? rom->tvType = tvEnum::PAL : rom->tvType = tvEnum::NTSC;
+
+		/*
+		NES 2.0 includes specifics for PRG RAM
+		*/
 
 	}
 	//	otherwise it's an iNES rom: https://wiki.nesdev.com/w/index.php/INES
 	else {
 
-		rom->prg_chunks = (uint32_t)rom->header.prgRomSizeLSB;
-		rom->chr_chunks = (uint32_t)rom->header.chrRomSizeLSB;
-		rom->prg.resize(((size_t)rom->header.prgRomSizeLSB * 0x4000));		//	0x4000 == 16KB
-		rom->chr.resize(((size_t)rom->header.chrRomSizeLSB * 0x2000));		//	0x2000 == 8KB
+		rom->prg_rom_chunks = (uint32_t)rom->header.prgRomSizeLSB;
+		rom->chr_rom_chunks = rom->header.chrRomSizeLSB ? (uint32_t)rom->header.chrRomSizeLSB : 1;
+		rom->prg_ram_chunks = rom->header.flags8 ? rom->header.flags8 : 1;							//	there will always be minimum one 8KB chunk of PRG RAM
+		rom->prg_rom.resize(((size_t)rom->header.prgRomSizeLSB * 0x4000));							//	0x4000 == 16KB
+		rom->chr_rom.resize(((size_t)rom->header.chrRomSizeLSB * 0x2000));							//	0x2000 == 8KB
+		rom->prg_ram.resize((size_t)rom->prg_ram_chunks * 0x2000);
+		(rom->header.prgChrSizeMSB & 0x01) ? rom->tvType = tvEnum::PAL : rom->tvType = tvEnum::NTSC;
 
 	}
 
@@ -59,10 +67,10 @@
 	//	for the prg section, we need to ignore the header(16 bytes) and the possible "trainer" section(512 bytes)
 	uint32_t prg_offset = 16 + (512 * ((rom->header.flags6 & 0b00000100) >> 2));
 	input.seekg(prg_offset, std::ios::beg);
-	input.read((char*)rom->prg.data(), rom->prg.size());
+	input.read((char*)rom->prg_rom.data(), rom->prg_rom.size());
 
 	//	since the chr section is immediately after the prg section, we can read it immediately after
-	input.read((char*)rom->chr.data(), rom->chr.size());
+	input.read((char*)rom->chr_rom.data(), rom->chr_rom.size());
 
 	/*
 		after the chr section, there is the possibility of a Miscellaneous section,
@@ -76,10 +84,46 @@
 
 }
 
-void CartridgeClass::reset() { 
-	
-	//	Mapper is specific to the Cartridge, so let the Cartridge handle it until shared_ptr is implemented
-	delete mapper;
-	mapper = nullptr;
+void CartridgeClass::unload() {
 
-}	
+	if (this->mapper != nullptr) {
+
+		delete this->mapper;
+		this->mapper = nullptr;
+
+	}
+
+}
+
+void CartridgeClass::storeMapper(MapperClass* _mapper) {
+
+	if (this->mapper != nullptr)
+		delete this->mapper;
+
+	this->mapper = _mapper;
+
+}
+
+void CartridgeClass::reset() {
+
+	//	needs to set data to a fixed state the CPU expects, see http://wiki.nesdev.com/w/index.php/CPU_memory_map
+
+}
+
+uint8_t CartridgeClass::prg_access(uint16_t& address, const uint8_t& data, bool isWrite) {
+
+	if (isWrite == true)
+		return this->mapper->prg_write(address, data);
+
+	return this->mapper->prg_read(address);
+
+}
+
+uint8_t CartridgeClass::chr_access(uint16_t& address, const uint8_t& data, bool isWrite) {
+
+	if (isWrite == true)
+		return this->mapper->chr_write(address, data);
+
+	return this->mapper->chr_read(address);
+
+}

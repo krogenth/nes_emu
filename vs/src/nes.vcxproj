@@ -143,6 +143,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Cartridge.cpp" />
+    <ClCompile Include="..\..\src\CPU.cpp" />
+    <ClCompile Include="..\..\src\CPU_Opcodes.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
     <ClCompile Include="..\..\src\mappers\Mapper.cpp" />
     <ClCompile Include="..\..\src\mappers\Mapper000.cpp" />
@@ -151,6 +153,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\include\Cartridge.h" />
+    <ClInclude Include="..\..\src\include\CPU.h" />
+    <ClInclude Include="..\..\src\include\CPU_Opcodes.h" />
     <ClInclude Include="..\..\src\include\custom_exceptions.h" />
     <ClInclude Include="..\..\src\include\io_util.h" />
     <ClInclude Include="..\..\src\include\mappers\Mapper.h" />
