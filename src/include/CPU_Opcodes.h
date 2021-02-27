@@ -18,8 +18,8 @@ http://www.emulator101.com/6502-addressing-modes.html
 */
 uint16_t addrMode_IMM(CPUClass& CPU) {	//	0 cycles
 
-#ifdef LOGGING
-	std::clog << "_IMM";
+#ifdef CPU_LOGGING
+	CPU.logFile << "_IMM";
 #endif
 
 	//	the address of the next byte is the byte to read
@@ -29,8 +29,8 @@ uint16_t addrMode_IMM(CPUClass& CPU) {	//	0 cycles
 
 uint16_t addrMode_IMP(CPUClass& CPU) {	//	0 cycles
 
-#ifdef LOGGING
-	std::clog << "_IMP";
+#ifdef CPU_LOGGING
+	CPU.logFile << "_IMP";
 #endif
 
 	/*
@@ -46,8 +46,8 @@ uint16_t addrMode_IMP(CPUClass& CPU) {	//	0 cycles
 
 uint16_t addrMode_ACC(CPUClass& CPU) {	//	0 cycles
 
-#ifdef LOGGING
-	std::clog << "_ACC";
+#ifdef CPU_LOGGING
+	CPU.logFile << "_ACC";
 #endif
 
 	/*
@@ -60,8 +60,8 @@ uint16_t addrMode_ACC(CPUClass& CPU) {	//	0 cycles
 
 uint16_t addrMode_ABS(CPUClass& CPU) {	//	2 cycles
 
-#ifdef LOGGING
-	std::clog << "_ABS";
+#ifdef CPU_LOGGING
+	CPU.logFile << "_ABS";
 #endif
 
 	//	we access twice here, so we need to cycle twice
@@ -76,8 +76,8 @@ uint16_t addrMode_ABS(CPUClass& CPU) {	//	2 cycles
 
 uint16_t addrMode_ABX(CPUClass& CPU) {	//	2-3 cycles
 
-#ifdef LOGGING
-	std::clog << "_ABX";
+#ifdef CPU_LOGGING
+	CPU.logFile << "_ABX";
 #endif
 
 	//	this piggybacks off the addrMode_ABS, and adds the register X to it
@@ -94,8 +94,8 @@ uint16_t addrMode_ABX(CPUClass& CPU) {	//	2-3 cycles
 
 uint16_t addrMode_ABY(CPUClass& CPU) {	//	2-3 cycles
 
-#ifdef LOGGING
-	std::clog << "_ABY";
+#ifdef CPU_LOGGING
+	CPU.logFile << "_ABY";
 #endif
 
 	//	the same as addrMode_ABX, but with the register Y
@@ -112,8 +112,8 @@ uint16_t addrMode_ABY(CPUClass& CPU) {	//	2-3 cycles
 
 uint16_t addrMode_ZP0(CPUClass& CPU) {	//	1 cycle
 
-#ifdef LOGGING
-	std::clog << "_ZP0";
+#ifdef CPU_LOGGING
+	CPU.logFile << "_ZP0";
 #endif
 
 	//	all accesses cost a cycle
@@ -130,8 +130,8 @@ uint16_t addrMode_ZP0(CPUClass& CPU) {	//	1 cycle
 
 uint16_t addrMode_ZPX(CPUClass& CPU) {	//	2 cycles
 
-#ifdef LOGGING
-	std::clog << "_ZPX";
+#ifdef CPU_LOGGING
+	CPU.logFile << "_ZPX";
 #endif
 
 	/*
@@ -150,8 +150,8 @@ uint16_t addrMode_ZPX(CPUClass& CPU) {	//	2 cycles
 
 uint16_t addrMode_ZPY(CPUClass& CPU) {	//	2 cycles
 
-#ifdef LOGGING
-	std::clog << "_ZPY";
+#ifdef CPU_LOGGING
+	CPU.logFile << "_ZPY";
 #endif
 
 	//	the same idea as addrMode_ZPX, but with register Y
@@ -168,8 +168,8 @@ uint16_t addrMode_ZPY(CPUClass& CPU) {	//	2 cycles
 
 uint16_t addrMode_REL(CPUClass& CPU) {	//	2 cycles
 
-#ifdef LOGGING
-	std::clog << "_REL";
+#ifdef CPU_LOGGING
+	CPU.logFile << "_REL";
 #endif
 
 	//	all branching opcodes cost a minimum of 2 cycles, we can do that here
@@ -187,8 +187,8 @@ uint16_t addrMode_REL(CPUClass& CPU) {	//	2 cycles
 
 uint16_t addrMode_IND(CPUClass& CPU) {	//	4 cycles
 
-#ifdef LOGGING
-	std::clog << "_IND";
+#ifdef CPU_LOGGING
+	CPU.logFile << "_IND";
 #endif
 
 	/*
@@ -200,8 +200,8 @@ uint16_t addrMode_IND(CPUClass& CPU) {	//	4 cycles
 	*/
 	uint16_t addr = addrMode_ABS(CPU);
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(addr);
+#ifdef CPU_LOGGING
+	CPU.logFile << " " << int_to_hex(addr);
 #endif
 
 	//	we access twice here, so we need to cycle twice
@@ -216,8 +216,8 @@ uint16_t addrMode_IND(CPUClass& CPU) {	//	4 cycles
 
 uint16_t addrMode_INX(CPUClass& CPU) {	//	4 cycles
 
-#ifdef LOGGING
-	std::clog << "_INX";
+#ifdef CPU_LOGGING
+	CPU.logFile << "_INX";
 #endif
 
 	/*
@@ -237,8 +237,8 @@ uint16_t addrMode_INX(CPUClass& CPU) {	//	4 cycles
 
 uint16_t addrMode_INY(CPUClass& CPU) {	//	3-4 cycles
 
-#ifdef LOGGING
-	std::clog << "_INY";
+#ifdef CPU_LOGGING
+	CPU.logFile << "_INY";
 #endif
 
 	/*
@@ -271,8 +271,8 @@ OPCODES
 //	arithmetic
 template<addrMode mode> void CPUClass::ADC() {
 
-#ifdef LOGGING
-	std::clog << "ADC";
+#ifdef CPU_LOGGING
+	this->logFile << "ADC";
 #endif
 
 	//	all accesses cost a cycle
@@ -280,8 +280,8 @@ template<addrMode mode> void CPUClass::ADC() {
 	//	get the data we need, and perform the calculation(always register A + data retrieved + carry flag)
 	uint8_t data = this->access(mode(*this));
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(data);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(data);
 #endif
 
 	//	arithmetic costs a cycle
@@ -300,8 +300,8 @@ template<addrMode mode> void CPUClass::ADC() {
 
 template<addrMode mode> void CPUClass::SBC() {
 
-#ifdef LOGGING
-	std::clog << "SBC";
+#ifdef CPU_LOGGING
+	this->logFile << "SBC";
 #endif
 
 	//	all accesses cost a cycle
@@ -310,8 +310,8 @@ template<addrMode mode> void CPUClass::SBC() {
 	//	see the following links explaination of subtraction: https://www.righto.com/2012/12/the-6502-overflow-flag-explained.html
 	uint8_t data = this->access(mode(*this));
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(data);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(data);
 #endif
 
 	//	arithmetic costs a cycle
@@ -331,8 +331,8 @@ template<addrMode mode> void CPUClass::SBC() {
 //	bitwise
 template<addrMode mode> void CPUClass::AND() {
 
-#ifdef LOGGING
-	std::clog << "AND";
+#ifdef CPU_LOGGING
+	this->logFile << "AND";
 #endif
 
 	//	all accesses cost a cycle, as does the bitwise operation
@@ -340,8 +340,8 @@ template<addrMode mode> void CPUClass::AND() {
 	uint8_t data = this->access(mode(*this));
 	this->reg_A &= data;
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(data);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(data);
 #endif
 
 	this->updateZero((uint16_t)this->reg_A);
@@ -352,8 +352,8 @@ template<addrMode mode> void CPUClass::AND() {
 
 template<addrMode mode> void CPUClass::BIT() {
 
-#ifdef LOGGING
-	std::clog << "BIT";
+#ifdef CPU_LOGGING
+	this->logFile << "BIT";
 #endif
 
 	//	all accesses cost a cycle
@@ -361,8 +361,8 @@ template<addrMode mode> void CPUClass::BIT() {
 	//	we only test the bits, we do not store the AND result
 	uint8_t data = this->access(mode(*this));
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(data);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(data);
 #endif
 
 	//	bitwise operation costs a cycle
@@ -379,8 +379,8 @@ template<addrMode mode> void CPUClass::BIT() {
 
 template<addrMode mode> void CPUClass::ORA() {
 
-#ifdef LOGGING
-	std::clog << "ORA";
+#ifdef CPU_LOGGING
+	this->logFile << "ORA";
 #endif
 
 	//	all accesses cost a cycle, as does the bitwise operation
@@ -388,8 +388,8 @@ template<addrMode mode> void CPUClass::ORA() {
 	uint8_t data = this->access(mode(*this));
 	this->reg_A |= data;
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(data);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(data);
 #endif
 
 	this->updateZero((uint16_t)this->reg_A);
@@ -399,8 +399,8 @@ template<addrMode mode> void CPUClass::ORA() {
 
 template<addrMode mode> void CPUClass::EOR() {
 
-#ifdef LOGGING
-	std::clog << "EOR";
+#ifdef CPU_LOGGING
+	this->logFile << "EOR";
 #endif
 
 	//	all accesses cost a cycle, as does the bitwise operation
@@ -408,8 +408,8 @@ template<addrMode mode> void CPUClass::EOR() {
 	uint8_t data = this->access(mode(*this));
 	this->reg_A ^= data;
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(data);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(data);
 #endif
 
 	this->updateZero((uint16_t)this->reg_A);
@@ -421,8 +421,8 @@ template<addrMode mode> void CPUClass::EOR() {
 //	bitwise shifts
 template<addrMode mode> void CPUClass::ASL() {
 
-#ifdef LOGGING
-	std::clog << "ASL";
+#ifdef CPU_LOGGING
+	this->logFile << "ASL";
 #endif
 
 	uint8_t data = 0;
@@ -441,8 +441,8 @@ template<addrMode mode> void CPUClass::ASL() {
 
 	}
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(data);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(data);
 #endif
 
 	//	update Carry flag
@@ -474,8 +474,8 @@ template<addrMode mode> void CPUClass::ASL() {
 
 template<addrMode mode> void CPUClass::LSR() {
 
-#ifdef LOGGING
-	std::clog << "LSR";
+#ifdef CPU_LOGGING
+	this->logFile << "LSR";
 #endif
 
 	uint8_t data = 0;
@@ -494,8 +494,8 @@ template<addrMode mode> void CPUClass::LSR() {
 
 	}
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(data);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(data);
 #endif
 
 	//	update Carry flag
@@ -527,8 +527,8 @@ template<addrMode mode> void CPUClass::LSR() {
 
 template<addrMode mode> void CPUClass::ROL() {
 
-#ifdef LOGGING
-	std::clog << "ROL";
+#ifdef CPU_LOGGING
+	this->logFile << "ROL";
 #endif
 
 	uint8_t data = 0;
@@ -548,8 +548,8 @@ template<addrMode mode> void CPUClass::ROL() {
 
 	}
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(data);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(data);
 #endif
 
 	//	grab the current carry flag
@@ -584,8 +584,8 @@ template<addrMode mode> void CPUClass::ROL() {
 
 template<addrMode mode> void CPUClass::ROR() {
 
-#ifdef LOGGING
-	std::clog << "ROR";
+#ifdef CPU_LOGGING
+	this->logFile << "ROR";
 #endif
 
 	uint8_t data = 0;
@@ -605,8 +605,8 @@ template<addrMode mode> void CPUClass::ROR() {
 
 	}
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(data);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(data);
 #endif
 
 	//	grab the current carry flag
@@ -643,8 +643,8 @@ template<addrMode mode> void CPUClass::ROR() {
 //	Decrement/Increment
 template<addrMode mode> void CPUClass::DEC() {
 
-#ifdef LOGGING
-	std::clog << "DEC";
+#ifdef CPU_LOGGING
+	this->logFile << "DEC";
 #endif
 
 	uint16_t addr = mode(*this);
@@ -653,8 +653,8 @@ template<addrMode mode> void CPUClass::DEC() {
 	this->cycle();
 	uint8_t data = this->access(addr);
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(data);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(data);
 #endif
 
 	//	somehow this opcode takes minimum 5 cycles, therefore this decrement costs 2 cycles
@@ -672,14 +672,14 @@ template<addrMode mode> void CPUClass::DEC() {
 
 template<addrMode mode> void CPUClass::DEX() {
 
-#ifdef LOGGING
-	std::clog << "DEX";
+#ifdef CPU_LOGGING
+	this->logFile << "DEX";
 #endif
 
 	mode(*this);
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(this->reg_X);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(this->reg_X);
 #endif
 
 	this->reg_X--;
@@ -691,14 +691,14 @@ template<addrMode mode> void CPUClass::DEX() {
 
 template<addrMode mode> void CPUClass::DEY() {
 
-#ifdef LOGGING
-	std::clog << "DEY";
+#ifdef CPU_LOGGING
+	this->logFile << "DEY";
 #endif
 
 	mode(*this);
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(this->reg_Y);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(this->reg_Y);
 #endif
 
 	this->reg_Y--;
@@ -710,8 +710,8 @@ template<addrMode mode> void CPUClass::DEY() {
 
 template<addrMode mode> void CPUClass::INC() {
 
-#ifdef LOGGING
-	std::clog << "INC";
+#ifdef CPU_LOGGING
+	this->logFile << "INC";
 #endif
 
 	uint16_t addr = mode(*this);
@@ -720,8 +720,8 @@ template<addrMode mode> void CPUClass::INC() {
 	this->cycle();
 	uint8_t data = this->access(addr);
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(data);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(data);
 #endif
 
 	//	somehow this opcode takes minimum 5 cycles, therefore this decrement costs 2 cycles
@@ -739,14 +739,14 @@ template<addrMode mode> void CPUClass::INC() {
 
 template<addrMode mode> void CPUClass::INX() {
 
-#ifdef LOGGING
-	std::clog << "INX";
+#ifdef CPU_LOGGING
+	this->logFile << "INX";
 #endif
 
 	mode(*this);
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(this->reg_X);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(this->reg_X);
 #endif
 
 	this->reg_X++;
@@ -758,14 +758,14 @@ template<addrMode mode> void CPUClass::INX() {
 
 template<addrMode mode> void CPUClass::INY() {
 
-#ifdef LOGGING
-	std::clog << "INY";
+#ifdef CPU_LOGGING
+	this->logFile << "INY";
 #endif
 
 	mode(*this);
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(this->reg_Y);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(this->reg_Y);
 #endif
 
 	this->reg_Y++;
@@ -779,24 +779,24 @@ template<addrMode mode> void CPUClass::INY() {
 //	jumps
 template<addrMode mode> void CPUClass::JMP() {
 
-#ifdef LOGGING
-	std::clog << "JMP";
+#ifdef CPU_LOGGING
+	this->logFile << "JMP";
 #endif
 
 	//	this opcode costs minimum 3 cycles, ABS by itself costs 2, so cycle once
 	this->cycle();
 	this->reg_PC = mode(*this);
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(this->reg_PC);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(this->reg_PC);
 #endif
 
 }
 
 template<addrMode mode> void CPUClass::JSR() {
 
-#ifdef LOGGING
-	std::clog << "JSR";
+#ifdef CPU_LOGGING
+	this->logFile << "JSR";
 #endif
 
 	//	store the next byte as return address for later
@@ -812,16 +812,16 @@ template<addrMode mode> void CPUClass::JSR() {
 	//	grab new Program Counter with whatever addressing mode we are using
 	this->reg_PC = mode(*this);
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(this->reg_PC);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(this->reg_PC);
 #endif
 
 }
 
 template<addrMode mode> void CPUClass::RTS() {
 
-#ifdef LOGGING
-	std::clog << "RTS";
+#ifdef CPU_LOGGING
+	this->logFile << "RTS";
 #endif
 
 	//	this opcode costs 6 cycles, and only uses addrMode_IMP
@@ -833,8 +833,8 @@ template<addrMode mode> void CPUClass::RTS() {
 
 template<addrMode mode> void CPUClass::RTI() {
 
-#ifdef LOGGING
-	std::clog << "RTI";
+#ifdef CPU_LOGGING
+	this->logFile << "RTI";
 #endif
 
 	this->PLP<mode>();
@@ -846,16 +846,16 @@ template<addrMode mode> void CPUClass::RTI() {
 //	loads
 template<addrMode mode> void CPUClass::LDA() {
 
-#ifdef LOGGING
-	std::clog << "LDA";
+#ifdef CPU_LOGGING
+	this->logFile << "LDA";
 #endif
 
 	//	all accesses cost a cycle
 	this->cycle();
 	this->reg_A = this->access(mode(*this));
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(this->reg_A);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(this->reg_A);
 #endif
 
 	//	opcode costs minimum 2 cycles, so we need to cycle once more
@@ -868,16 +868,16 @@ template<addrMode mode> void CPUClass::LDA() {
 
 template<addrMode mode> void CPUClass::LDX() {
 
-#ifdef LOGGING
-	std::clog << "LDX";
+#ifdef CPU_LOGGING
+	this->logFile << "LDX";
 #endif
 
 	//	all accesses cost a cycle
 	this->cycle();
 	this->reg_X = this->access(mode(*this));
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(this->reg_X);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(this->reg_X);
 #endif
 
 	//	opcode costs minimum 2 cycles, so we need to cycle once more
@@ -890,16 +890,16 @@ template<addrMode mode> void CPUClass::LDX() {
 
 template<addrMode mode> void CPUClass::LDY() {
 
-#ifdef LOGGING
-	std::clog << "LDY";
+#ifdef CPU_LOGGING
+	this->logFile << "LDY";
 #endif
 
 	//	all accesses cost a cycle
 	this->cycle();
 	this->reg_Y = this->access(mode(*this));
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(this->reg_Y);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(this->reg_Y);
 #endif
 
 	//	opcode costs minimum 2 cycles, so we need to cycle once more
@@ -914,8 +914,8 @@ template<addrMode mode> void CPUClass::LDY() {
 //	no operation
 template<addrMode mode> void CPUClass::NOP() {
 
-#ifdef LOGGING
-	std::clog << "NOP";
+#ifdef CPU_LOGGING
+	this->logFile << "NOP";
 #endif
 
 	mode(*this);
@@ -925,8 +925,8 @@ template<addrMode mode> void CPUClass::NOP() {
 //	stack operations
 template<addrMode mode> void CPUClass::PHA() {
 
-#ifdef LOGGING
-	std::clog << "PHA";
+#ifdef CPU_LOGGING
+	this->logFile << "PHA";
 #endif
 
 	//	opcode costs 3 cycles total, push costs 1, so cycle 2 more times
@@ -937,16 +937,16 @@ template<addrMode mode> void CPUClass::PHA() {
 
 template<addrMode mode> void CPUClass::PLA() {
 
-#ifdef LOGGING
-	std::clog << "PLA";
+#ifdef CPU_LOGGING
+	this->logFile << "PLA";
 #endif
 
 	//	opcode costs 4 cycles total, pop costs 1, so cycle 3 more times
 	mode(*this); this->cycle();
 	this->reg_A = this->pop();
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(this->reg_A);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(this->reg_A);
 #endif
 
 	this->updateZero((uint16_t)this->reg_A);
@@ -956,8 +956,8 @@ template<addrMode mode> void CPUClass::PLA() {
 
 template<addrMode mode> void CPUClass::PHP() {
 
-#ifdef LOGGING
-	std::clog << "PHP";
+#ifdef CPU_LOGGING
+	this->logFile << "PHP";
 #endif
 
 	//	opcode costs 3 cycles total, push costs 1, so cycle 2 more times
@@ -968,16 +968,16 @@ template<addrMode mode> void CPUClass::PHP() {
 
 template<addrMode mode> void CPUClass::PLP() {
 
-#ifdef LOGGING
-	std::clog << "PLP";
+#ifdef CPU_LOGGING
+	this->logFile << "PLP";
 #endif
 
 	//	this opcode always costs 4 cycles, pop costs 1, so cycle 3 more times
 	mode(*this); this->cycle();
 	this->reg_FL = this->pop();
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(this->reg_FL);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(this->reg_FL);
 #endif
 
 }
@@ -986,8 +986,8 @@ template<addrMode mode> void CPUClass::PLP() {
 //	register storing
 template<addrMode mode> void CPUClass::TAX() {
 
-#ifdef LOGGING
-	std::clog << "TAX";
+#ifdef CPU_LOGGING
+	this->logFile << "TAX";
 #endif
 
 	mode(*this);
@@ -1000,8 +1000,8 @@ template<addrMode mode> void CPUClass::TAX() {
 
 template<addrMode mode> void CPUClass::TAY() {
 
-#ifdef LOGGING
-	std::clog << "TAY";
+#ifdef CPU_LOGGING
+	this->logFile << "TAY";
 #endif
 
 	mode(*this);
@@ -1014,8 +1014,8 @@ template<addrMode mode> void CPUClass::TAY() {
 
 template<addrMode mode> void CPUClass::TSX() {
 
-#ifdef LOGGING
-	std::clog << "TSX";
+#ifdef CPU_LOGGING
+	this->logFile << "TSX";
 #endif
 
 	mode(*this);
@@ -1028,8 +1028,8 @@ template<addrMode mode> void CPUClass::TSX() {
 
 template<addrMode mode> void CPUClass::TXA() {
 
-#ifdef LOGGING
-	std::clog << "TXA";
+#ifdef CPU_LOGGING
+	this->logFile << "TXA";
 #endif
 
 	mode(*this);
@@ -1042,8 +1042,8 @@ template<addrMode mode> void CPUClass::TXA() {
 
 template<addrMode mode> void CPUClass::TYA() {
 
-#ifdef LOGGING
-	std::clog << "TYA";
+#ifdef CPU_LOGGING
+	this->logFile << "TYA";
 #endif
 
 	mode(*this);
@@ -1056,8 +1056,8 @@ template<addrMode mode> void CPUClass::TYA() {
 
 template<addrMode mode> void CPUClass::TXS() {
 
-#ifdef LOGGING
-	std::clog << "TSX";
+#ifdef CPU_LOGGING
+	this->logFile << "TSX";
 #endif
 
 	mode(*this);
@@ -1069,15 +1069,15 @@ template<addrMode mode> void CPUClass::TXS() {
 //	memory storing
 template<addrMode mode> void CPUClass::STA() {
 
-#ifdef LOGGING
-	std::clog << "STA";
+#ifdef CPU_LOGGING
+	this->logFile << "STA";
 #endif
 
 	//	store register A at address
 	uint16_t addr = mode(*this);
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(addr);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(addr);
 #endif
 
 	//	opcode costs minimum 3 cycles with addrMode_ZP0(1 cycle), so cycle 2 more times
@@ -1088,15 +1088,15 @@ template<addrMode mode> void CPUClass::STA() {
 
 template<addrMode mode> void CPUClass::STX() {
 
-#ifdef LOGGING
-	std::clog << "STX";
+#ifdef CPU_LOGGING
+	this->logFile << "STX";
 #endif
 
 	//	store register X at address
 	uint16_t addr = mode(*this);
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(addr);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(addr);
 #endif
 
 	//	opcode costs minimum 3 cycles with addrMode_ZP0(1 cycle), so cycle 2 more times
@@ -1107,15 +1107,15 @@ template<addrMode mode> void CPUClass::STX() {
 
 template<addrMode mode> void CPUClass::STY() {
 
-#ifdef LOGGING
-	std::clog << "STY";
+#ifdef CPU_LOGGING
+	this->logFile << "STY";
 #endif
 
 	//	store register Y at address
 	uint16_t addr = mode(*this);
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(addr);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(addr);
 #endif
 
 	//	opcode costs minimum 3 cycles with addrMode_ZP0(1 cycle), so cycle 2 more times
@@ -1128,8 +1128,8 @@ template<addrMode mode> void CPUClass::STY() {
 //	branching
 template<addrMode mode> void CPUClass::BCC() {
 
-#ifdef LOGGING
-	std::clog << "BCC";
+#ifdef CPU_LOGGING
+	this->logFile << "BCC";
 #endif
 
 	//	branch only if the last calculation resulted in no carry
@@ -1138,8 +1138,8 @@ template<addrMode mode> void CPUClass::BCC() {
 	//uint8_t offset = this->access(mode(*this));
 	uint16_t offset = mode(*this);
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(offset);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(offset);
 #endif
 
 	if (this->getFlagState(CPU_FLAGS::Carry) == 0) {
@@ -1159,8 +1159,8 @@ template<addrMode mode> void CPUClass::BCC() {
 
 template<addrMode mode> void CPUClass::BCS() {
 
-#ifdef LOGGING
-	std::clog << "BCS";
+#ifdef CPU_LOGGING
+	this->logFile << "BCS";
 #endif
 
 	//	branch only if the last calculation resulted in a carry
@@ -1168,8 +1168,8 @@ template<addrMode mode> void CPUClass::BCS() {
 	//	we still need to read the data related to the opcode, to go voer the entire opcode
 	uint16_t offset = mode(*this);
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(offset);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(offset);
 #endif
 
 	if (this->getFlagState(CPU_FLAGS::Carry) == true) {
@@ -1189,8 +1189,8 @@ template<addrMode mode> void CPUClass::BCS() {
 
 template<addrMode mode> void CPUClass::BEQ() {
 
-#ifdef LOGGING
-	std::clog << "BEQ";
+#ifdef CPU_LOGGING
+	this->logFile << "BEQ";
 #endif
 
 	//	branch only if the last calcuation resulted in a zero
@@ -1198,8 +1198,8 @@ template<addrMode mode> void CPUClass::BEQ() {
 	//	we still need to read the data related to the opcode, to go voer the entire opcode
 	uint16_t offset = mode(*this);
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(offset);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(offset);
 #endif
 
 	if (this->getFlagState(CPU_FLAGS::Zero) == true) {
@@ -1219,8 +1219,8 @@ template<addrMode mode> void CPUClass::BEQ() {
 
 template<addrMode mode> void CPUClass::BMI() {
 
-#ifdef LOGGING
-	std::clog << "BMI";
+#ifdef CPU_LOGGING
+	this->logFile << "BMI";
 #endif
 
 	//	branch only if the last calcuation resulted in a negative
@@ -1228,8 +1228,8 @@ template<addrMode mode> void CPUClass::BMI() {
 	//	we still need to read the data related to the opcode, to go voer the entire opcode
 	uint16_t offset = mode(*this);
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(offset);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(offset);
 #endif
 
 	if (this->getFlagState(CPU_FLAGS::Negative) == true) {
@@ -1249,8 +1249,8 @@ template<addrMode mode> void CPUClass::BMI() {
 
 template<addrMode mode> void CPUClass::BNE() {
 
-#ifdef LOGGING
-	std::clog << "BNE";
+#ifdef CPU_LOGGING
+	this->logFile << "BNE";
 #endif
 
 	//	branch only if the last calcuation resulted in a non-zero
@@ -1258,8 +1258,8 @@ template<addrMode mode> void CPUClass::BNE() {
 	//	we still need to read the data related to the opcode, to go voer the entire opcode
 	uint16_t offset = mode(*this);
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(offset);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(offset);
 #endif
 
 	if (this->getFlagState(CPU_FLAGS::Zero) == false) {
@@ -1279,8 +1279,8 @@ template<addrMode mode> void CPUClass::BNE() {
 
 template<addrMode mode> void CPUClass::BPL() {
 
-#ifdef LOGGING
-	std::clog << "BPL";
+#ifdef CPU_LOGGING
+	this->logFile << "BPL";
 #endif
 
 	//	branch only if the last calcuation resulted in a positive
@@ -1288,8 +1288,8 @@ template<addrMode mode> void CPUClass::BPL() {
 	//	we still need to read the data related to the opcode, to go voer the entire opcode
 	uint16_t offset = mode(*this);
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(offset);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(offset);
 #endif
 
 	if (this->getFlagState(CPU_FLAGS::Negative) == false) {
@@ -1309,8 +1309,8 @@ template<addrMode mode> void CPUClass::BPL() {
 
 template<addrMode mode> void CPUClass::BVC() {
 
-#ifdef LOGGING
-	std::clog << "BVC";
+#ifdef CPU_LOGGING
+	this->logFile << "BVC";
 #endif
 
 	//	branch only if the last calcuation resulted in no overflow
@@ -1318,8 +1318,8 @@ template<addrMode mode> void CPUClass::BVC() {
 	//	we still need to read the data related to the opcode, to go voer the entire opcode
 	uint16_t offset = mode(*this);
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(offset);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(offset);
 #endif
 
 	if (this->getFlagState(CPU_FLAGS::Overflow) == false) {
@@ -1339,8 +1339,8 @@ template<addrMode mode> void CPUClass::BVC() {
 
 template<addrMode mode> void CPUClass::BVS() {
 
-#ifdef LOGGING
-	std::clog << "BVS";
+#ifdef CPU_LOGGING
+	this->logFile << "BVS";
 #endif
 
 	//	branch only if the last calcuation resulted in overflow
@@ -1348,8 +1348,8 @@ template<addrMode mode> void CPUClass::BVS() {
 	//	we still need to read the data related to the opcode, to go voer the entire opcode
 	uint16_t offset = mode(*this);
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(offset);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(offset);
 #endif
 
 	if (this->getFlagState(CPU_FLAGS::Overflow) == true) {
@@ -1371,8 +1371,8 @@ template<addrMode mode> void CPUClass::BVS() {
 //	flag operations
 template<addrMode mode> void CPUClass::CLC() {
 
-#ifdef LOGGING
-	std::clog << "CLC";
+#ifdef CPU_LOGGING
+	this->logFile << "CLC";
 #endif
 
 	mode(*this);
@@ -1382,8 +1382,8 @@ template<addrMode mode> void CPUClass::CLC() {
 
 template<addrMode mode> void CPUClass::CLD() {
 
-#ifdef LOGGING
-	std::clog << "CLD";
+#ifdef CPU_LOGGING
+	this->logFile << "CLD";
 #endif
 
 	mode(*this);
@@ -1393,8 +1393,8 @@ template<addrMode mode> void CPUClass::CLD() {
 
 template<addrMode mode> void CPUClass::CLI() {
 
-#ifdef LOGGING
-	std::clog << "CLI";
+#ifdef CPU_LOGGING
+	this->logFile << "CLI";
 #endif
 
 	mode(*this);
@@ -1404,8 +1404,8 @@ template<addrMode mode> void CPUClass::CLI() {
 
 template<addrMode mode> void CPUClass::CLV() {
 
-#ifdef LOGGING
-	std::clog << "CLV";
+#ifdef CPU_LOGGING
+	this->logFile << "CLV";
 #endif
 
 	mode(*this);
@@ -1415,8 +1415,8 @@ template<addrMode mode> void CPUClass::CLV() {
 
 template<addrMode mode> void CPUClass::SEC() {
 
-#ifdef LOGGING
-	std::clog << "SEC";
+#ifdef CPU_LOGGING
+	this->logFile << "SEC";
 #endif
 
 	mode(*this);
@@ -1426,8 +1426,8 @@ template<addrMode mode> void CPUClass::SEC() {
 
 template<addrMode mode> void CPUClass::SED() {
 
-#ifdef LOGGING
-	std::clog << "SED";
+#ifdef CPU_LOGGING
+	this->logFile << "SED";
 #endif
 
 	mode(*this);
@@ -1437,8 +1437,8 @@ template<addrMode mode> void CPUClass::SED() {
 
 template<addrMode mode> void CPUClass::SEI() {
 
-#ifdef LOGGING
-	std::clog << "SEI";
+#ifdef CPU_LOGGING
+	this->logFile << "SEI";
 #endif
 
 	mode(*this);
@@ -1450,8 +1450,8 @@ template<addrMode mode> void CPUClass::SEI() {
 //	comparisons
 template<addrMode mode> void CPUClass::CMP() {
 
-#ifdef LOGGING
-	std::clog << "CMP";
+#ifdef CPU_LOGGING
+	this->logFile << "CMP";
 #endif
 
 	//	all accesses cost a cycle
@@ -1459,8 +1459,8 @@ template<addrMode mode> void CPUClass::CMP() {
 	//	we do not store the result of this operation
 	uint8_t data = this->access(mode(*this));
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(data);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(data);
 #endif
 
 	//	arithmetic costs a cycle
@@ -1477,8 +1477,8 @@ template<addrMode mode> void CPUClass::CMP() {
 
 template<addrMode mode> void CPUClass::CPX() {
 
-#ifdef LOGGING
-	std::clog << "CPX";
+#ifdef CPU_LOGGING
+	this->logFile << "CPX";
 #endif
 
 	//	all accesses cost a cycle
@@ -1486,8 +1486,8 @@ template<addrMode mode> void CPUClass::CPX() {
 	//	we do not store the result of this operation
 	uint8_t data = this->access(mode(*this));
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(data);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(data);
 #endif
 
 	//	arithmetic costs a cycle
@@ -1504,8 +1504,8 @@ template<addrMode mode> void CPUClass::CPX() {
 
 template<addrMode mode> void CPUClass::CPY() {
 
-#ifdef LOGGING
-	std::clog << "CPY";
+#ifdef CPU_LOGGING
+	this->logFile << "CPY";
 #endif
 
 	//	all accesses cost a cycle
@@ -1513,8 +1513,8 @@ template<addrMode mode> void CPUClass::CPY() {
 	//	we do not store the result of this operation
 	uint8_t data = this->access(mode(*this));
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(data);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(data);
 #endif
 
 	//	arithmetic costs a cycle
@@ -1533,8 +1533,8 @@ template<addrMode mode> void CPUClass::CPY() {
 //	break
 template<addrMode mode> void CPUClass::BRK() {
 
-#ifdef LOGGING
-	std::clog << "BRK";
+#ifdef CPU_LOGGING
+	this->logFile << "BRK";
 #endif
 
 	//	needs to perform an interrupt here
@@ -1561,8 +1561,8 @@ template<addrMode mode> void CPUClass::BRK() {
 	//	and we change the Program Counter to be at whatever FFFE points to
 	this->reg_PC = (uint16_t)this->access(0xFFFE) | ((uint16_t)this->access(0xFFFF) << 8);
 
-#ifdef LOGGING
-	std::clog << " " << int_to_hex(this->reg_PC);
+#ifdef CPU_LOGGING
+	this->logFile << " " << int_to_hex(this->reg_PC);
 #endif
 
 }

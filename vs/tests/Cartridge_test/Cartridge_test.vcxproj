@@ -148,6 +148,8 @@
     <ClCompile Include="..\..\..\src\mappers\Mapper.cpp" />
     <ClCompile Include="..\..\..\src\mappers\Mapper000.cpp" />
     <ClCompile Include="..\..\..\src\mappers\Mapper001.cpp" />
+    <ClCompile Include="..\..\..\src\mappers\Mapper002.cpp" />
+    <ClCompile Include="..\..\..\src\mappers\Mapper003.cpp" />
     <ClCompile Include="..\..\..\tests\Cartridge_test\Cartridge_test.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +159,8 @@
     <ClInclude Include="..\..\..\src\include\mappers\Mapper.h" />
     <ClInclude Include="..\..\..\src\include\mappers\Mapper000.h" />
     <ClInclude Include="..\..\..\src\include\mappers\Mapper001.h" />
+    <ClInclude Include="..\..\..\src\include\mappers\mapper002.h" />
+    <ClInclude Include="..\..\..\src\include\mappers\Mapper003.h" />
     <ClInclude Include="..\..\..\src\include\Mapper_Collection.h" />
     <ClInclude Include="..\..\..\src\include\RomStruct.h" />
   </ItemGroup>
