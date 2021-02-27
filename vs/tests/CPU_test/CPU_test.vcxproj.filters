@@ -39,6 +39,12 @@
     <ClCompile Include="..\..\..\tests\CPU_test\CPU_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\mappers\Mapper002.cpp">
+      <Filter>Mappers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mappers\Mapper003.cpp">
+      <Filter>Mappers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\include\CPU.h">
@@ -70,6 +76,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\include\CPU_Opcodes.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\include\mappers\mapper002.h">
+      <Filter>Mappers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\include\mappers\Mapper003.h">
+      <Filter>Mappers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

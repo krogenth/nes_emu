@@ -11,18 +11,15 @@ CPUClass::CPUClass() {
 	this->RAM.resize(0x2000);
 
 	//	for debugging mode, open logfile and direct clog to it
-#ifdef LOGGING
-	this->logFile.open("log.txt", std::ios::out);
-	std::clog.rdbuf(this->logFile.rdbuf());
+#ifdef CPU_LOGGING
+	this->logFile.open("cpu_log.txt", std::ios::out);
 #endif
 
 }
 
 CPUClass::~CPUClass() {
 
-#ifdef LOGGING
-	std::clog.rdbuf(this->clog_buf);
-#endif
+
 
 }
 
@@ -62,8 +59,8 @@ void CPUClass::cycle() {
 
 void CPUClass::execute() {
 
-#ifdef LOGGING
-	std::clog << "CYC: " << std::setw(10) << this->cycleCount
+#ifdef CPU_LOGGING
+	this->logFile << "CYC: " << std::setw(10) << this->cycleCount
 			  << " PC: " << std::setw(10) << int_to_hex(this->reg_PC)
 			  << " A: " << int_to_hex(this->reg_A)
 			  << " X: " << int_to_hex(this->reg_X)
@@ -247,8 +244,8 @@ void CPUClass::execute() {
 
 	}
 
-#ifdef LOGGING
-	std::clog << '\n' << std::flush;
+#ifdef CPU_LOGGING
+	this->logFile << '\n' << std::flush;
 #endif
 
 }

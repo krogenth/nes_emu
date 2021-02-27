@@ -4,11 +4,10 @@
 #include <cinttypes>	//	(u)intx_t
 #include <vector>		//	std::vector
 
-#if defined (DEBUG) | defined(_DEBUG)
-#define LOGGING
+
+#ifdef CPU_LOGGING
 #include <fstream>		//	std::ifstream, std::ofstream
 #include <iomanip>		//	std::setw
-#include <iostream>		//	std::cout, std::cerr, std::clog
 #endif
 
 //	the entire register status flags is 8 bits, therefore we can save these values as 8 bit values
@@ -68,9 +67,8 @@ protected:
 	APUClass* APU = nullptr;
 
 	//	used in debug mode for logging
-#ifdef LOGGING
+#ifdef CPU_LOGGING
 	std::ofstream logFile;
-	std::streambuf* clog_buf = std::clog.rdbuf();
 #endif
 
 	//	to handle the timing of instructions and PPU(PPU clock is 3x CPU clock(at least with NTSC, PAL is 2.4x))
