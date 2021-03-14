@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Mappers">
+      <UniqueIdentifier>{2154093c-299e-4b79-a74c-5ec0fc558bd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui">
+      <UniqueIdentifier>{efc61e44-26bd-4291-88c1-1d4f2fc69bf4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GL3W">
+      <UniqueIdentifier>{a4bd54de-1d5c-44d6-8df8-c790da16639e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\Cartridge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\CPU.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Mapper_Collection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mappers\Mapper.cpp">
+      <Filter>Mappers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mappers\Mapper000.cpp">
+      <Filter>Mappers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mappers\Mapper001.cpp">
+      <Filter>Mappers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\tests\CPU_test\CPU_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mappers\Mapper002.cpp">
+      <Filter>Mappers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\mappers\Mapper003.cpp">
+      <Filter>Mappers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Controller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\GUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libs\imgui\examples\libs\gl3w\GL\gl3w.c">
+      <Filter>GL3W</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libs\imgui\imgui.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libs\imgui\imgui_draw.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libs\imgui\imgui_tables.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libs\imgui\imgui_widgets.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\PPU.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libs\imgui\backends\imgui_impl_opengl3.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libs\imgui\backends\imgui_impl_sdl.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\include\CPU.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\include\custom_exceptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\include\Cartridge.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\include\io_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\include\Mapper_Collection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\include\RomStruct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\include\mappers\Mapper.h">
+      <Filter>Mappers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\include\mappers\Mapper000.h">
+      <Filter>Mappers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\include\mappers\Mapper001.h">
+      <Filter>Mappers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\include\CPU_Opcodes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\include\mappers\mapper002.h">
+      <Filter>Mappers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\include\mappers\Mapper003.h">
+      <Filter>Mappers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\include\Controller.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\include\GUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\imgui\examples\libs\gl3w\GL\gl3w.h">
+      <Filter>GL3W</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\imgui\imconfig.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\imgui\imgui.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\imgui\imgui_internal.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\imgui\imstb_rectpack.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\imgui_club\imgui_memory_editor\imgui_memory_editor.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\imgui-filebrowser\imfilebrowser.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\imgui\examples\libs\gl3w\GL\glcorearb.h">
+      <Filter>GL3W</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\include\PPU.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\imgui\backends\imgui_impl_opengl3.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\imgui\backends\imgui_impl_sdl.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
