@@ -13,4 +13,4 @@ configuration:
   - Release
 
 build_script:
-  - MSBuild /vs/%APPVEYOR_PROJECT_NAME%.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - MSBuild /vs/nes.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
