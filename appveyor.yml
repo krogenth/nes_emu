@@ -1,5 +1,5 @@
 # specify version formating, auto-incremented by appveyor
-version: "{build}"
+version: 'build-{build}-{branch}'
 
 # scripts to be run after appveyor clones the repo
 install:
@@ -11,3 +11,6 @@ platform:
 configuration:
   - Debug
   - Release
+
+build_script:
+  - MSBuild /vs/%APPVEYOR_PROJECT_NAME%.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
