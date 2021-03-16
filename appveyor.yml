@@ -1,0 +1,13 @@
+# specify version formating, auto-incremented by appveyor
+version: "{build}"
+
+# scripts to be run after appveyor clones the repo
+install:
+  - git submodule update --init --recursive
+
+platform:
+  - x64
+
+configuration:
+  - Debug
+  - Release
