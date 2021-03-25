@@ -153,9 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\libs\imgui\backends\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="..\..\..\libs\imgui\backends\imgui_impl_sdl.cpp" />
-    <ClCompile Include="..\..\..\libs\imgui\examples\libs\gl3w\GL\gl3w.c" />
+    <ClCompile Include="..\..\..\libs\imgui-sfml\imgui-SFML.cpp" />
     <ClCompile Include="..\..\..\libs\imgui\imgui.cpp" />
     <ClCompile Include="..\..\..\libs\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\..\libs\imgui\imgui_tables.cpp" />
@@ -175,10 +173,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\libs\imgui-filebrowser\imfilebrowser.h" />
-    <ClInclude Include="..\..\..\libs\imgui\backends\imgui_impl_opengl3.h" />
-    <ClInclude Include="..\..\..\libs\imgui\backends\imgui_impl_sdl.h" />
-    <ClInclude Include="..\..\..\libs\imgui\examples\libs\gl3w\GL\gl3w.h" />
-    <ClInclude Include="..\..\..\libs\imgui\examples\libs\gl3w\GL\glcorearb.h" />
+    <ClInclude Include="..\..\..\libs\imgui-sfml\imgui-SFML.h" />
+    <ClInclude Include="..\..\..\libs\imgui-sfml\imgui-SFML_export.h" />
     <ClInclude Include="..\..\..\libs\imgui\imconfig.h" />
     <ClInclude Include="..\..\..\libs\imgui\imgui.h" />
     <ClInclude Include="..\..\..\libs\imgui\imgui_internal.h" />
