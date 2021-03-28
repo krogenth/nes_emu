@@ -3,75 +3,31 @@
 #include ".\include\GUI.h"
 
 #include ".\imgui.h"
-#include ".\imgui_impl_sdl.h"
-#include ".\imgui_impl_opengl3.h"
+#include ".\imgui-SFML.h"
+
+#include ".\SFML\Audio.hpp"
+#include ".\SFML\Graphics.hpp"
+#include ".\SFML\System.hpp"
+#include ".\SFML\Window.hpp"
+
+#include ".\SFML\Graphics\Drawable.hpp"
 
 #include ".\imgui_memory_editor\imgui_memory_editor.h"
 #include ".\imfilebrowser.h"
 
-#include ".\SDL.h"
-#include ".\SDL_syswm.h"
-#include ".\GL\gl3w.h"
 
 #include ".\include\Cartridge.h"
 #include ".\include\Mapper_Collection.h"
 
 GUIClass::GUIClass(std::string progName) {
 
-    // Setup SDL
-    // (Some versions of SDL before <2.0.10 appears to have performance/stalling issues on a minority of Windows systems,
-    // depending on whether SDL_INIT_GAMECONTROLLER is enabled or disabled.. updating to latest version of SDL is recommended!)
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0) {
+    //  initialize SFML window context to a default state
+    this->window.create(sf::VideoMode(1280, 720), progName);
+    this->window.setFramerateLimit(60);
 
-        std::cerr << "Error: " << SDL_GetError() << '\n' << std::flush;
-        exit(-1);
+    this->gameTexture.create(1280, 720);
 
-    }
-
-    // Decide GL+GLSL versions
-#ifdef __APPLE__
-    // GL 3.2 Core + GLSL 150
-    const char* glsl_version = "#version 150";
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG); // Always required on Mac
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-#else
-    // GL 3.0 + GLSL 130
-    const char* glsl_version = "#version 130";
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-#endif
-
-    // Create window with graphics context
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-    SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
-    this->window = SDL_CreateWindow(progName.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
-    renderer = SDL_CreateRenderer(window, -1,SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    SDL_RenderSetLogicalSize(renderer, 1280, 720);
-    this->gl_context = SDL_GL_CreateContext(this->window);
-    SDL_GL_MakeCurrent(this->window, this->gl_context);
-    SDL_GL_SetSwapInterval(1); // Enable vsync
-
-    if (gl3wInit() != 0)
-        std::cerr << "Failed to initialize GL3W!\n" << std::flush;
-
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-
-    // Setup Platform/Renderer backends
-    ImGui_ImplSDL2_InitForOpenGL(this->window, this->gl_context);
-    ImGui_ImplOpenGL3_Init(glsl_version);
+    ImGui::SFML::Init(this->window);
 
     //  initialize filebrowser for title and file type lookup
     this->filebrowser.SetTitle("Choose File");
@@ -86,58 +42,61 @@ GUIClass::~GUIClass() {
 		delete this->cart_hex_windows.at(i).hex_view;
     for (uint32_t i = 0; i < this->cpu_hex_windows.size(); i++)
         delete this->cpu_hex_windows.at(i).hex_view;
+    for (uint32_t i = 0; i < this->ppu_hex_windows.size(); i++)
+        delete this->ppu_hex_windows.at(i).hex_view;
 
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplSDL2_Shutdown();
-	ImGui::DestroyContext();
-
-	SDL_GL_DeleteContext(this->gl_context);
-	SDL_DestroyWindow(this->window);
-	SDL_Quit();
+    ImGui::SFML::Shutdown();
 
 }
 
 void GUIClass::addCartViewer(std::string windowName, CartridgeClass::GetCartData getData_ptr, CartridgeClass::getCartDataSize getSize_ptr) {
 
     this->cart_hex_windows.push_back(CartridgeMemoryEditorContainer());
-    this->cart_hex_windows.at(this->cart_hex_windows.size() - 1).hex_view = new MemoryEditor;
-    this->cart_hex_windows.at(this->cart_hex_windows.size() - 1).hex_name = windowName;
-    this->cart_hex_windows.at(this->cart_hex_windows.size() - 1).getDataFunc = getData_ptr;
-    this->cart_hex_windows.at(this->cart_hex_windows.size() - 1).getSizeFunc = getSize_ptr;
+    this->cart_hex_windows.back().hex_view = new MemoryEditor;
+    this->cart_hex_windows.back().hex_name = windowName;
+    this->cart_hex_windows.back().getDataFunc = getData_ptr;
+    this->cart_hex_windows.back().getSizeFunc = getSize_ptr;
 
 }
 
 void GUIClass::addCPUViewer(std::string windowName, CPUClass::getCPUData getData_ptr, CPUClass::getCPUDataSize getSize_ptr) {
 
     this->cpu_hex_windows.push_back(CPUMemoryEditorContainer());
-    this->cpu_hex_windows.at(this->cpu_hex_windows.size() - 1).hex_view = new MemoryEditor;
-    this->cpu_hex_windows.at(this->cpu_hex_windows.size() - 1).hex_name = windowName;
-    this->cpu_hex_windows.at(this->cpu_hex_windows.size() - 1).getDataFunc = getData_ptr;
-    this->cpu_hex_windows.at(this->cpu_hex_windows.size() - 1).getSizeFunc = getSize_ptr;
+    this->cpu_hex_windows.back().hex_view = new MemoryEditor;
+    this->cpu_hex_windows.back().hex_name = windowName;
+    this->cpu_hex_windows.back().getDataFunc = getData_ptr;
+    this->cpu_hex_windows.back().getSizeFunc = getSize_ptr;
+
+}
+
+void GUIClass::addPPUViewer(std::string windowName, PPUClass::getPPUData getData_ptr, PPUClass::getPPUDataSize getSize_ptr) {
+
+    this->ppu_hex_windows.push_back(PPUMemoryEditorContainer());
+    this->ppu_hex_windows.back().hex_view = new MemoryEditor;
+    this->ppu_hex_windows.back().hex_name = windowName;
+    this->ppu_hex_windows.back().getDataFunc = getData_ptr;
+    this->ppu_hex_windows.back().getSizeFunc = getSize_ptr;
 
 }
 
 void GUIClass::draw() {
-    
-    ImGuiIO& io = ImGui::GetIO();
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-    //  check for events, handle ones we want to here, specifically for quitting
-    SDL_Event event;
-    while (SDL_PollEvent(&event)) {
+    sf::Event e;
+    while (this->window.pollEvent(e)) {
 
-        ImGui_ImplSDL2_ProcessEvent(&event);
-        if (event.type == SDL_QUIT)
-            isRendering = false;
-        if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window))
-            isRendering = false;
+        ImGui::SFML::ProcessEvent(e);
+
+        if (e.type == sf::Event::Closed)
+            this->isRendering = false;
 
     }
 
-	//	begin new frame
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplSDL2_NewFrame(this->window);
-	ImGui::NewFrame();
+    sf::Sprite sprite(this->gameTexture);
+
+    ImGui::SFML::Update(this->window, clock.restart());
+
+    //sprite.setColor(sf::Color::Blue);
+    //ImGui::Image(sprite);
 
     //  draw the menu now before dealing with sub windows
     this->drawMenu();
@@ -151,14 +110,10 @@ void GUIClass::draw() {
     if (showFileDialog)
         this->drawFileDialog();
 
-    // Rendering
-    ImGui::Render();
-    glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-    SDL_GL_SwapWindow(this->window);
-    //SDL_RenderPresent(this->renderer);
+    this->window.clear();
+    this->window.draw(sprite);
+    ImGui::SFML::Render(this->window);
+    this->window.display();
 
 }
 
@@ -167,15 +122,6 @@ uint8_t GUIClass::getControllerState() {
     const uint32_t dead_zone = 8000;
 
     uint8_t temp = 0;
-
-    temp |= SDLK_r;         //  A pressed
-    temp |= SDLK_f << 1;    //  B pressed
-    temp |= SDLK_t << 2;    //  select pressed
-    temp |= SDLK_g << 3;    //  start pressed
-    temp |= SDLK_w << 4;    //  up pressed
-    temp |= SDLK_s << 5;    //  down pressed
-    temp |= SDLK_a << 6;    //  left pressed
-    temp |= SDLK_d << 7;    //  right pressed
 
     return temp;
 
@@ -189,10 +135,13 @@ bool GUIClass::isLoaded() {
 
 }
 
-void GUIClass::updateFrame(uint32_t* pixels) {
+void GUIClass::updateFrame(sf::Image& pixels) {
 
     //  need to adjust last parameter(pitch) based on PPU information(dimensions of the screen to be rendered)
-    SDL_UpdateTexture(gameTexture, NULL, pixels, 0);
+    uint32_t x, y;
+    std::tie(x, y) = this->PPU->getResolution();
+    //this->gameTexture.update((uint8_t*)pixels, x, y, 0, 0);
+    this->gameTexture.update(pixels);
 
 }
 
@@ -291,6 +240,8 @@ void GUIClass::drawSelectDebug() {
         ImGui::Checkbox(this->cart_hex_windows.at(i).hex_name.c_str(), &this->cart_hex_windows.at(i).isShown);
     for (uint32_t i = 0; i < this->cpu_hex_windows.size(); i++)
         ImGui::Checkbox(this->cpu_hex_windows.at(i).hex_name.c_str(), &this->cpu_hex_windows.at(i).isShown);
+    for (uint32_t i = 0; i < this->ppu_hex_windows.size(); i++)
+        ImGui::Checkbox(this->ppu_hex_windows.at(i).hex_name.c_str(), &this->ppu_hex_windows.at(i).isShown);
     ImGui::End();
 
 }
@@ -300,16 +251,29 @@ void GUIClass::drawDebug() {
     ImGui::Begin("Information");
     ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
     ImGui::Text("Loaded File: %s", this->loadedFile.c_str());
+    if (this->isLoaded()) {
+
+        uint32_t x, y;
+        std::tie(x, y) = this->PPU->getResolution();
+        ImGui::Text("Resolution: %dx%d", x, y);
+
+        sf::Vector2u res = this->gameTexture.getSize();
+        ImGui::Text("Tex Res: %dx%d", res.x, res.y);
+
+    }
     ImGui::End();
 
     //  here we use the function pointers we stored before to grab the data we wish to view, if it is available
-    for (uint32_t i = 0; i < cart_hex_windows.size(); i++)
+    for (uint32_t i = 0; i < this->cart_hex_windows.size(); i++)
         if (this->cart_hex_windows.at(i).isShown && (this->cartridge->*this->cart_hex_windows.at(i).getDataFunc)() != nullptr)
             this->cart_hex_windows.at(i).hex_view->DrawWindow(this->cart_hex_windows.at(i).hex_name.c_str(), (this->cartridge->*this->cart_hex_windows.at(i).getDataFunc)(), (this->cartridge->*this->cart_hex_windows.at(i).getSizeFunc)());
-    for (uint32_t i = 0; i < cpu_hex_windows.size(); i++)
+    for (uint32_t i = 0; i < this->cpu_hex_windows.size(); i++)
         //  CPU sections will always be available, therefore we do not need to check if these sections actually exist or not
         if (this->cpu_hex_windows.at(i).isShown)
             this->cpu_hex_windows.at(i).hex_view->DrawWindow(this->cpu_hex_windows.at(i).hex_name.c_str(), (this->CPU->*this->cpu_hex_windows.at(i).getDataFunc)(), (this->CPU->*this->cpu_hex_windows.at(i).getSizeFunc)());
+    for(uint32_t i = 0; i < this->ppu_hex_windows.size(); i++)
+        if(this->ppu_hex_windows.at(i).isShown)
+            this->ppu_hex_windows.at(i).hex_view->DrawWindow(this->ppu_hex_windows.at(i).hex_name.c_str(), (this->PPU->*this->ppu_hex_windows.at(i).getDataFunc)(), (this->PPU->*this->ppu_hex_windows.at(i).getSizeFunc)());
 
 }
 
@@ -338,16 +302,13 @@ void GUIClass::drawFileDialog() {
 
             //  we would need to reset all components here that require it(APU and PPU specifically)
 
-            //  check if a texture is already made, if so, destroy it so we do not leak memory
-            if (this->gameTexture)
-                SDL_DestroyTexture(this->gameTexture);
-
             //  check if we have the PPU loaded, if not, we can ignore this
             if (this->PPU) {
 
+                this->PPU->reset();
                 uint32_t x, y;
                 std::tie(x, y) = this->PPU->getResolution();
-                this->gameTexture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, x, y);
+                this->gameTexture.create(x, y);
 
             }
 

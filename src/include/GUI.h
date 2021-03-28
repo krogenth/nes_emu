@@ -7,7 +7,8 @@
 #include <iostream>
 
 #include ".\imgui.h"
-#include ".\SDL.h"
+#include ".\SFML\Graphics.hpp"
+#include ".\SFML\System.hpp"
 
 #include ".\CPU.h"
 #include ".\PPU.h"
@@ -24,7 +25,7 @@ static bool showFileDialog = false;
 //	split up based on component, because of the requirement for function pointers
 struct CartridgeMemoryEditorContainer {
 
-	MemoryEditor* hex_view;
+	MemoryEditor* hex_view = nullptr;
 	std::string hex_name = "";
 	CartridgeClass::GetCartData getDataFunc = nullptr;
 	CartridgeClass::getCartDataSize getSizeFunc = nullptr;
@@ -35,10 +36,21 @@ struct CartridgeMemoryEditorContainer {
 
 struct CPUMemoryEditorContainer {
 
-	MemoryEditor* hex_view;
+	MemoryEditor* hex_view = nullptr;
 	std::string hex_name = "";
 	CPUClass::getCPUData getDataFunc = nullptr;
 	CPUClass::getCPUDataSize getSizeFunc = nullptr;
+	size_t hex_data_size = 0;
+	bool isShown = false;
+
+};
+
+struct PPUMemoryEditorContainer {
+
+	MemoryEditor* hex_view = nullptr;
+	std::string hex_name = "";
+	PPUClass::getPPUData getDataFunc = nullptr;
+	PPUClass::getPPUDataSize getSizeFunc = nullptr;
 	size_t hex_data_size = 0;
 	bool isShown = false;
 
@@ -53,6 +65,7 @@ public:
 	//	we need to have different functions for the different classes to view, because we need to use function pointers to view the data
 	void addCartViewer(std::string windowName, CartridgeClass::GetCartData getData_ptr, CartridgeClass::getCartDataSize getSize_ptr);
 	void addCPUViewer(std::string windowName, CPUClass::getCPUData getData_ptr, CPUClass::getCPUDataSize getSize_ptr);
+	void addPPUViewer(std::string windowName, PPUClass::getPPUData getData_ptr, PPUClass::getPPUDataSize getSize_ptr);
 
 	//	used to draw the current frame
 	void draw();
@@ -73,12 +86,14 @@ public:
 	bool isLoaded();
 
 	//	used to allow the PPU to update the current frame once scanline is complete
-	void updateFrame(uint32_t* pixels);
+	void updateFrame(sf::Image& pixels);
 
 private:
 	bool isRendering = true;
 	bool isPaused = false;
 	bool showDebug = false;
+
+	uint32_t delay = 0;
 
 	std::string loadedFile = "";
 
@@ -86,12 +101,12 @@ private:
 
 	std::vector<CartridgeMemoryEditorContainer> cart_hex_windows;
 	std::vector<CPUMemoryEditorContainer> cpu_hex_windows;
+	std::vector<PPUMemoryEditorContainer> ppu_hex_windows;
 
-	//	SDL2 and ImGui specific types used for handling rendering
-	SDL_Window* window = nullptr;
-	SDL_Renderer* renderer = nullptr;
-	SDL_GLContext gl_context;
-	SDL_Texture* gameTexture = nullptr;
+	//	parts that we need for SFML
+	sf::RenderWindow window;
+	sf::Texture gameTexture;
+	sf::Clock clock;
 
 	//	pointers to components the GUI accesses
 	CPUClass* CPU = nullptr;
