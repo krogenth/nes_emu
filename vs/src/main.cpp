@@ -33,6 +33,7 @@ int main(int argc, char* argv[]) {
 	gui.loadCPU(&cpu);
 	gui.loadPPU(&ppu);
 	gui.loadCartridge(&cartridge);
+	gui.loadController(&controller);
 
 	//	give the GUI the information it needs in order to create the windows for the various memory spaces
 	gui.addCPUViewer("CPU RAM", &CPUClass::get_cpu_ram, &CPUClass::get_cpu_ram_size);
@@ -40,6 +41,7 @@ int main(int argc, char* argv[]) {
 	gui.addCartViewer("Cartridge PRG ROM", &CartridgeClass::get_prm_rom, &CartridgeClass::get_prm_rom_size);
 	gui.addCartViewer("Cartridge PRG RAM", &CartridgeClass::get_prg_ram, &CartridgeClass::get_prg_ram_size);
 	gui.addCartViewer("Cartridge CHR ROM", &CartridgeClass::get_chr_rom, &CartridgeClass::get_chr_rom_size);
+
 
 	while (gui.shouldRender()) {
 

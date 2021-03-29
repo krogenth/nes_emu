@@ -9,6 +9,7 @@
 #include ".\imgui.h"
 #include ".\SFML\Graphics.hpp"
 #include ".\SFML\System.hpp"
+#include ".\SFML\Window\Joystick.hpp"
 
 #include ".\CPU.h"
 #include ".\PPU.h"
@@ -20,6 +21,8 @@ struct MemoryEditor;
 
 static bool showSelectDebug = false;
 static bool showFileDialog = false;
+static bool showControllerDialog = false;
+static bool showButtonSet[]{ false, false, false, false};
 
 //	structs to contain everything needed to create the windows for the hex viewers
 //	split up based on component, because of the requirement for function pointers
@@ -70,7 +73,7 @@ public:
 	//	used to draw the current frame
 	void draw();
 
-	//	checks what keys are pressed through SDL2, and stores in a byte to be compatible with the NES
+	//	checks what keys are pressed through SFML, and stores in a byte to be compatible with the NES
 	uint8_t getControllerState();
 
 	//	helper functions to help determine if rendering should continue(the entire program) and if emulation is paused(CPU is paused)
@@ -81,6 +84,7 @@ public:
 	void loadCPU(CPUClass* _CPU) { this->CPU = _CPU; }
 	void loadPPU(PPUClass* _PPU) { this->PPU = _PPU; }
 	void loadCartridge(CartridgeClass* _cartridge) { this->cartridge = _cartridge; }
+	void loadController(ControllerClass* _controller) { this->controller = _controller; }
 
 	//	checks to see if there is a cartridge ROM loaded
 	bool isLoaded();
@@ -118,6 +122,11 @@ private:
 	void drawSelectDebug();
 	void drawDebug();
 	void drawFileDialog();
+	void drawControllerDialog();
+	void drawSetButtons(int b);
+
+	//Controller class pointer
+	ControllerClass* controller = nullptr;
 
 };
 

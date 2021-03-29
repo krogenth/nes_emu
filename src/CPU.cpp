@@ -70,19 +70,19 @@ void CPUClass::execute() {
 
 #ifdef CPU_LOGGING
 	this->logFile << "CYC: " << std::setw(10) << this->cycleCount
-			  << " PC: " << std::setw(10) << int_to_hex(this->registers.reg_PC)
-			  << " A: " << int_to_hex(this->registers.reg_A)
-			  << " X: " << int_to_hex(this->registers.reg_X)
-			  << " Y: " << int_to_hex(this->registers.reg_Y)
-			  << " FL: " << int_to_hex(this->registers.reg_FL)
-			  << " SP: " << int_to_hex(this->registers.reg_SP)
-			  << '\t';
+		<< " PC: " << std::setw(10) << int_to_hex(this->registers.reg_PC)
+		<< " A: " << int_to_hex(this->registers.reg_A)
+		<< " X: " << int_to_hex(this->registers.reg_X)
+		<< " Y: " << int_to_hex(this->registers.reg_Y)
+		<< " FL: " << int_to_hex(this->registers.reg_FL)
+		<< " SP: " << int_to_hex(this->registers.reg_SP)
+		<< '\t';
 #endif
 
 	if (this->NMI_INT) {
 
 		this->handleNMI();
-		
+
 		return;
 	}
 	if (this->IRQ_INT && (this->getFlagState(CPU_FLAGS::Interrupt) == false)) {
@@ -306,12 +306,12 @@ uint8_t CPUClass::access(uint16_t address, uint8_t data, bool isWrite) {
 		if (isWrite) {
 
 			//	verify that the controller is connected
-			if(this->controller)
-				this->controller->write();
+			if (this->controller)
+				this->controller->write(data & 1);
 			return 0;
 
 		}
-		if(this->controller)
+		if (this->controller)
 			return this->controller->read();
 		return 0;
 

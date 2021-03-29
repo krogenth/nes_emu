@@ -9,6 +9,7 @@
 #include ".\SFML\Graphics.hpp"
 #include ".\SFML\System.hpp"
 #include ".\SFML\Window.hpp"
+#include ".\SFML\Window\Joystick.hpp"
 
 #include ".\SFML\Graphics\Drawable.hpp"
 
@@ -18,6 +19,8 @@
 
 #include ".\include\Cartridge.h"
 #include ".\include\Mapper_Collection.h"
+
+#include ".\include\Controller.h"
 
 GUIClass::GUIClass(std::string progName) {
 
@@ -37,9 +40,9 @@ GUIClass::GUIClass(std::string progName) {
 
 GUIClass::~GUIClass() {
 
-	//	we need to deallocate the memory used for the memory editor windows
-	for (uint32_t i = 0; i < this->cart_hex_windows.size(); i++)
-		delete this->cart_hex_windows.at(i).hex_view;
+    //	we need to deallocate the memory used for the memory editor windows
+    for (uint32_t i = 0; i < this->cart_hex_windows.size(); i++)
+        delete this->cart_hex_windows.at(i).hex_view;
     for (uint32_t i = 0; i < this->cpu_hex_windows.size(); i++)
         delete this->cpu_hex_windows.at(i).hex_view;
     for (uint32_t i = 0; i < this->ppu_hex_windows.size(); i++)
@@ -109,7 +112,16 @@ void GUIClass::draw() {
 
     if (showFileDialog)
         this->drawFileDialog();
-
+    if (showControllerDialog)
+        this->drawControllerDialog();
+    if (showButtonSet[0])
+        this->drawSetButtons(0);
+    if (showButtonSet[1])
+        this->drawSetButtons(1);
+    if (showButtonSet[2])
+        this->drawSetButtons(2);
+    if (showButtonSet[3])
+        this->drawSetButtons(3);
     this->window.clear();
     this->window.draw(sprite);
     ImGui::SFML::Render(this->window);
@@ -119,10 +131,34 @@ void GUIClass::draw() {
 
 uint8_t GUIClass::getControllerState() {
 
-    const uint32_t dead_zone = 8000;
+    const int dead_zone = 60;
 
     uint8_t temp = 0;
-
+    sf::Joystick::update();
+    if (sf::Joystick::isConnected(0)) {
+         temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(0))) << 0;    //  A pressed
+         temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(1))) << 1;    //  B pressed
+         temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(2))) << 2;    //  select pressed
+         temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(3))) << 3;    //  start pressed
+         temp |= (sf::Joystick::getAxisPosition(0,sf::Joystick::Axis::PovY) > dead_zone) << 4;    //  up pressed dpad
+         temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::Y) < -dead_zone) << 4;     //  up pressed left stick
+         temp |= (sf::Joystick::getAxisPosition(0,sf::Joystick::Axis::PovY) < -dead_zone) << 5;   //  down pressed dpad
+         temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovY) > dead_zone) << 5;   //  down pressed left stick
+         temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovX) < -dead_zone) << 6;  //  left pressed dpad
+         temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X) < -dead_zone) << 6;     //  left pressed left stick
+         temp |= (sf::Joystick::getAxisPosition(0,sf::Joystick::Axis::PovX) > dead_zone) << 7;    //  right pressed dpad
+         temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X) > dead_zone) << 7;      //  right pressed left stick
+    }
+    else {
+        temp |= (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) << 0;    //  A pressed
+        temp |= (sf::Keyboard::isKeyPressed(sf::Keyboard::F)) << 1;    //  B pressed
+        temp |= (sf::Keyboard::isKeyPressed(sf::Keyboard::T)) << 2;    //  select pressed
+        temp |= (sf::Keyboard::isKeyPressed(sf::Keyboard::G)) << 3;    //  start pressed
+        temp |= (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) << 4;    //  up pressed
+        temp |= (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) << 5;    //  down pressed
+        temp |= (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) << 6;    //  left pressed
+        temp |= (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) << 7;    //  right pressed
+    }
     return temp;
 
 }
@@ -159,7 +195,7 @@ void GUIClass::drawMenu() {
             //  set to true so the GUI::Draw function knows to begin displaying this dialog
             showFileDialog = true;
             //  as far as I know, there is only the *.nes extension for ROM files, so we can tell it to only look for that file extension
-            
+
             //ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDialog", "Choose File", ".nes,.*", ".");
             this->filebrowser.Open();
 
@@ -195,7 +231,7 @@ void GUIClass::drawMenu() {
                 this->isPaused = !this->isPaused;
 
         }
-
+       
         //  moved to sub-menu item so if user drops one menu and drags into previous Quit menu button, it does not auto-quit
         if (ImGui::MenuItem("Quit"))
             this->isRendering = false;
@@ -226,8 +262,89 @@ void GUIClass::drawMenu() {
         ImGui::EndMenu();
 
     }
+    if (ImGui::BeginMenu("Settings")) {
+        if (ImGui::MenuItem("Set Controller Binds" ) && sf::Joystick::isConnected(0)) {
+            showControllerDialog = true;
+
+        }  
+
+        ImGui::EndMenu();
+    }
 
     ImGui::EndMainMenuBar();
+
+}
+
+void::GUIClass::drawControllerDialog() {
+  
+    ImGui::Begin("Controller Bindings", &showControllerDialog);  
+    ImGui::Text("'A' is currently button: %d", this->controller->getButton(0));    
+    if (ImGui::Button("Rebind A")) { showButtonSet[0] = true; }
+    ImGui::Text("'B' is currently button: %d", this->controller->getButton(1));
+    if (ImGui::Button("Rebind B")) { showButtonSet[1] = true; }
+    ImGui::Text("'Select' is currently button: %d", this->controller->getButton(2));
+    if (ImGui::Button("Rebind Select")) { showButtonSet[2] = true; }
+    ImGui::Text("'Start' is currently button: %d", this->controller->getButton(3));
+    if (ImGui::Button("Rebind Start")) { showButtonSet[3] = true; }
+    if (ImGui::Button("Save To ini")) { this->controller->setIni(); }
+            
+    ImGui::End();          
+        //a b select start   
+}
+
+void::GUIClass::drawSetButtons(int b) {
+    switch (b){
+    case 0:
+        ImGui::Begin("A Binding", &showButtonSet[0]);
+        ImGui::Text("'A' is currently button: %d", this->controller->getButton(0));
+        ImGui::Text("Press new 'A' buton...");
+        for (int i = 0; i < sf::Joystick::getButtonCount(0); i++) {
+            if (sf::Joystick::isButtonPressed(0, i)) {
+                this->controller->setButton(0, i);
+                i = sf::Joystick::getButtonCount(0);
+            }
+        }
+        ImGui::End();
+        break;
+    case 1:
+        ImGui::Begin("B Binding", &showButtonSet[1]);
+        ImGui::Text("'B' is currently button: %d", this->controller->getButton(1));
+        ImGui::Text("Press new 'B' buton...");
+        for (int i = 0; i < sf::Joystick::getButtonCount(0); i++) {
+            if (sf::Joystick::isButtonPressed(0, i)) {
+                this->controller->setButton(1, i);
+                i = sf::Joystick::getButtonCount(0);
+            }
+        }
+        ImGui::End();
+        break;
+    case 2:
+        ImGui::Begin("Select Binding", &showButtonSet[2]);
+        ImGui::Text("'Select' is currently button: %d", this->controller->getButton(2));
+        ImGui::Text("Press new 'Select' buton...");
+        for (int i = 0; i < sf::Joystick::getButtonCount(0); i++) {
+            if (sf::Joystick::isButtonPressed(0, i)) {
+                this->controller->setButton(2, i);
+                i = sf::Joystick::getButtonCount(0);
+            }
+        }
+        ImGui::End();
+        break;
+    case 3:
+        ImGui::Begin("Start Binding", &showButtonSet[3]);
+        ImGui::Text("'Start' is currently button: %d", this->controller->getButton(3));
+        ImGui::Text("Press new 'Start' buton...");
+        for (int i = 0; i < sf::Joystick::getButtonCount(0); i++) {
+            if (sf::Joystick::isButtonPressed(0, i)) {
+                this->controller->setButton(3, i);
+                i = sf::Joystick::getButtonCount(0);
+            }
+        }
+        ImGui::End();
+        break;
+    default:
+        break;
+    }
 
 }
 
@@ -271,8 +388,8 @@ void GUIClass::drawDebug() {
         //  CPU sections will always be available, therefore we do not need to check if these sections actually exist or not
         if (this->cpu_hex_windows.at(i).isShown)
             this->cpu_hex_windows.at(i).hex_view->DrawWindow(this->cpu_hex_windows.at(i).hex_name.c_str(), (this->CPU->*this->cpu_hex_windows.at(i).getDataFunc)(), (this->CPU->*this->cpu_hex_windows.at(i).getSizeFunc)());
-    for(uint32_t i = 0; i < this->ppu_hex_windows.size(); i++)
-        if(this->ppu_hex_windows.at(i).isShown)
+    for (uint32_t i = 0; i < this->ppu_hex_windows.size(); i++)
+        if (this->ppu_hex_windows.at(i).isShown)
             this->ppu_hex_windows.at(i).hex_view->DrawWindow(this->ppu_hex_windows.at(i).hex_name.c_str(), (this->PPU->*this->ppu_hex_windows.at(i).getDataFunc)(), (this->PPU->*this->ppu_hex_windows.at(i).getSizeFunc)());
 
 }
