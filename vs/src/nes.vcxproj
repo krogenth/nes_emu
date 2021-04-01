@@ -169,6 +169,7 @@
     <ClCompile Include="..\..\src\Controller.cpp" />
     <ClCompile Include="..\..\src\CPU.cpp" />
     <ClCompile Include="..\..\src\GUI.cpp" />
+    <ClCompile Include="..\..\src\main.cpp" />
     <ClCompile Include="..\..\src\mappers\Mapper.cpp" />
     <ClCompile Include="..\..\src\mappers\Mapper000.cpp" />
     <ClCompile Include="..\..\src\mappers\Mapper001.cpp" />
@@ -176,7 +177,6 @@
     <ClCompile Include="..\..\src\mappers\Mapper003.cpp" />
     <ClCompile Include="..\..\src\Mapper_Collection.cpp" />
     <ClCompile Include="..\..\src\PPU.cpp" />
-    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\libs\imgui-sfml\imgui-SFML.h" />

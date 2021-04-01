@@ -1,5 +1,3 @@
-#define SDL_MAIN_HANDLED
-
 #include <string>
 
 #include "..\..\src\include\CPU.h"
@@ -26,8 +24,8 @@ int main(int argc, char* argv[]) {
 	cpu.loadCartridge(&cartridge);
 	cpu.loadController(&controller);
 
-	//	give PPU access to relevant components
 	ppu.loadCartridge(&cartridge);
+	ppu.loadGUI(&gui);
 
 	//	give GUI access to relevant components it needs to access
 	gui.loadCPU(&cpu);
@@ -37,6 +35,7 @@ int main(int argc, char* argv[]) {
 	//	give the GUI the information it needs in order to create the windows for the various memory spaces
 	gui.addCPUViewer("CPU RAM", &CPUClass::get_cpu_ram, &CPUClass::get_cpu_ram_size);
 	gui.addCPUViewer("CPU Regs", &CPUClass::get_cpu_regs, &CPUClass::get_cpu_regs_size);
+
 	gui.addCartViewer("Cartridge PRG ROM", &CartridgeClass::get_prm_rom, &CartridgeClass::get_prm_rom_size);
 	gui.addCartViewer("Cartridge PRG RAM", &CartridgeClass::get_prg_ram, &CartridgeClass::get_prg_ram_size);
 	gui.addCartViewer("Cartridge CHR ROM", &CartridgeClass::get_chr_rom, &CartridgeClass::get_chr_rom_size);
@@ -44,7 +43,7 @@ int main(int argc, char* argv[]) {
 	while (gui.shouldRender()) {
 
 		if (!gui.paused() && gui.isLoaded())
-			cpu.execute();
+			cpu.runFrame();
 
 		gui.draw();
 

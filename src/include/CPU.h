@@ -4,11 +4,15 @@
 #include <cinttypes>	//	(u)intx_t
 #include <vector>		//	std::vector
 
-
 #ifdef CPU_LOGGING
 #include <fstream>		//	std::ifstream, std::ofstream
 #include <iomanip>		//	std::setw
 #endif
+
+#include ".\PPU.h"
+#include ".\APU.h"
+#include ".\Controller.h"
+#include ".\Cartridge.h"
 
 //	the entire register status flags is 8 bits, therefore we can save these values as 8 bit values
 enum CPU_FLAGS : uint8_t {
@@ -18,7 +22,7 @@ enum CPU_FLAGS : uint8_t {
 	Interrupt = 0b00000100,
 	Decimal   = 0b00001000,
 	B_flag    = 0b00010000,
-	Unknown2  = 0b00100000,
+	Unknown1  = 0b00100000,
 	Overflow  = 0b01000000,
 	Negative  = 0b10000000
 
@@ -33,7 +37,7 @@ struct CPU_Registers {
 	uint8_t reg_A = 0;
 	uint8_t reg_X = 0;
 	uint8_t reg_Y = 0;
-	uint8_t reg_FL = CPU_FLAGS::Unknown2 | CPU_FLAGS::Interrupt;
+	uint8_t reg_FL = 0;
 	uint8_t reg_SP = 0xFD;
 
 };
@@ -46,10 +50,6 @@ reducing significantly the amount of work required to code all opcodes
 */
 class CPUClass;
 typedef uint16_t(*addrMode)(CPUClass&);
-class CartridgeClass;
-class PPUClass;
-class APUClass;
-class ControllerClass;
 
 class CPUClass {
 
@@ -63,8 +63,13 @@ public:
 	void loadAPU(APUClass* _APU) { this->APU = _APU; }
 	void loadController(ControllerClass* _controller) { this->controller = _controller; }
 
+	uint64_t elapsedTime() { return this->getFrameCycles() - this->remainingCycles; }
+
 	//	used to "turn on" the console and reset console
 	void reset();
+
+	//	to run a full frame of execution
+	void runFrame();
 
 	//	used to determine what opcode to execute
 	void execute();
@@ -72,12 +77,14 @@ public:
 	void setNMI(bool _NMI) { this->NMI_INT = _NMI; }
 	void setIRQ(bool _IRQ) { this->IRQ_INT = _IRQ; }
 
+	uint32_t getFrameCycles() { return this->tvFrameCycleCount[this->cartridge->getTV()]; }
+
+	//int readDMC(void*, cpu_addr_t address) { return this->access(address); }
+
 	void* get_cpu_ram() { return (void*)&(this->RAM.at(0)); }
 	size_t get_cpu_ram_size() { return this->RAM.size(); }
 	void* get_cpu_regs() { return (void*)&this->registers; }
 	size_t get_cpu_regs_size() { return sizeof(this->registers); }
-
-	uint32_t getFrameCycles();
 
 	//	function pointers for GUI access to CPU data
 	typedef void* (CPUClass::*getCPUData)(void);
@@ -88,6 +95,7 @@ protected:
 	CPU_Registers registers;
 
 	uint64_t cycleCount = 0;
+	int64_t remainingCycles = 0;
 
 	std::vector<uint8_t> RAM;
 
@@ -109,7 +117,7 @@ protected:
 	std::ofstream logFile;
 #endif
 
-	//	to handle the timing of instructions and PPU(PPU clock is 3x CPU clock(at least with NTSC, PAL is 2.4x))
+	//	to handle the timing of instructions and PPU(PPU clock is 3x CPU clock(at least with NTSC, PAL is 3.2x))
 	void cycle();
 
 	//	declare addressing modes as friends to this class
