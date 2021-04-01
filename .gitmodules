@@ -7,3 +7,9 @@
 [submodule "libs/imgui-filebrowser"]
 	path = libs/imgui-filebrowser
 	url = https://github.com/AirGuanZ/imgui-filebrowser
+[submodule "libs/sfml"]
+	path = libs/sfml
+	url = https://github.com/SFML/SFML
+[submodule "libs/imgui-sfml"]
+	path = libs/imgui-sfml
+	url = https://github.com/eliasdaler/imgui-sfml

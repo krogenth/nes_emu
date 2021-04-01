@@ -19,9 +19,6 @@
     <Filter Include="ImGui">
       <UniqueIdentifier>{efc61e44-26bd-4291-88c1-1d4f2fc69bf4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GL3W">
-      <UniqueIdentifier>{a4bd54de-1d5c-44d6-8df8-c790da16639e}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\Cartridge.cpp">
@@ -57,9 +54,6 @@
     <ClCompile Include="..\..\..\src\GUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\libs\imgui\examples\libs\gl3w\GL\gl3w.c">
-      <Filter>GL3W</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\libs\imgui\imgui.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
@@ -75,10 +69,7 @@
     <ClCompile Include="..\..\..\src\PPU.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\libs\imgui\backends\imgui_impl_opengl3.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\libs\imgui\backends\imgui_impl_sdl.cpp">
+    <ClCompile Include="..\..\..\libs\imgui-sfml\imgui-SFML.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
   </ItemGroup>
@@ -125,9 +116,6 @@
     <ClInclude Include="..\..\..\src\include\GUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\libs\imgui\examples\libs\gl3w\GL\gl3w.h">
-      <Filter>GL3W</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\libs\imgui\imconfig.h">
       <Filter>ImGui</Filter>
     </ClInclude>
@@ -146,16 +134,13 @@
     <ClInclude Include="..\..\..\libs\imgui-filebrowser\imfilebrowser.h">
       <Filter>ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\libs\imgui\examples\libs\gl3w\GL\glcorearb.h">
-      <Filter>GL3W</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\include\PPU.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\libs\imgui\backends\imgui_impl_opengl3.h">
+    <ClInclude Include="..\..\..\libs\imgui-sfml\imgui-SFML.h">
       <Filter>ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\libs\imgui\backends\imgui_impl_sdl.h">
+    <ClInclude Include="..\..\..\libs\imgui-sfml\imgui-SFML_export.h">
       <Filter>ImGui</Filter>
     </ClInclude>
   </ItemGroup>

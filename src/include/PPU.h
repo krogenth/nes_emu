@@ -74,7 +74,7 @@ struct PPU_Registers {
 class PPUClass {
 
 public:
-	//	used to access Cartridge opr RAM
+	//	used to access Cartridge or RAM
 	uint8_t access(uint16_t& addr, uint8_t& data, bool isWrite);
 
 	//	used to access PPU registers
@@ -89,6 +89,9 @@ public:
 	void reset();
 
 	std::tuple<uint32_t, uint32_t> getResolution();
+
+	typedef void* (PPUClass::* getPPUData)(void);
+	typedef size_t(PPUClass::* getPPUDataSize)(void);
 
 protected:
 	//	store the resolution of the image displayed(NTSC, PAL)
