@@ -24,6 +24,9 @@ int main(int argc, char* argv[]) {
 	cpu.loadCartridge(&cartridge);
 	cpu.loadController(&controller);
 
+	ppu.loadCartridge(&cartridge);
+	ppu.loadGUI(&gui);
+
 	//	give GUI access to relevant components it needs to access
 	gui.loadCPU(&cpu);
 	gui.loadPPU(&ppu);
