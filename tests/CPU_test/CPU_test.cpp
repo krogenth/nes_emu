@@ -16,7 +16,7 @@ int main() {
 	cpu.reset();	//	we need to power the CPU to a known state
 
 	while (true)
-		cpu.execute();
+		cpu.runFrame();
 
 	return EXIT_SUCCESS;
 
