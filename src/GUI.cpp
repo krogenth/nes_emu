@@ -47,6 +47,8 @@ GUIClass::~GUIClass() {
         delete this->cpu_hex_windows.at(i).hex_view;
     for (uint32_t i = 0; i < this->ppu_hex_windows.size(); i++)
         delete this->ppu_hex_windows.at(i).hex_view;
+    for (uint32_t i = 0; i < this->controller_hex_windows.size(); i++)
+        delete this->controller_hex_windows.at(i).hex_view;
 
     ImGui::SFML::Shutdown();
 
@@ -79,6 +81,16 @@ void GUIClass::addPPUViewer(std::string windowName, PPUClass::getPPUData getData
     this->ppu_hex_windows.back().hex_name = windowName;
     this->ppu_hex_windows.back().getDataFunc = getData_ptr;
     this->ppu_hex_windows.back().getSizeFunc = getSize_ptr;
+
+}
+
+void GUIClass::addControllerViewer(std::string windowName, ControllerClass::getControllerData getData_ptr, ControllerClass::getControllerDataSize getSize_ptr) {
+
+    this->controller_hex_windows.push_back(ControllerMemoryEditorContainer());
+    this->controller_hex_windows.back().hex_view = new MemoryEditor;
+    this->controller_hex_windows.back().hex_name = windowName;
+    this->controller_hex_windows.back().getDataFunc = getData_ptr;
+    this->controller_hex_windows.back().getSizeFunc = getSize_ptr;
 
 }
 
@@ -136,6 +148,7 @@ uint8_t GUIClass::getControllerState() {
     uint8_t temp = 0;
     sf::Joystick::update();
     if (sf::Joystick::isConnected(0)) {
+<<<<<<< Updated upstream
          temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(0))) << 0;    //  A pressed
          temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(1))) << 1;    //  B pressed
          temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(2))) << 2;    //  select pressed
@@ -148,6 +161,20 @@ uint8_t GUIClass::getControllerState() {
          temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X) < -dead_zone) << 6;     //  left pressed left stick
          temp |= (sf::Joystick::getAxisPosition(0,sf::Joystick::Axis::PovX) > dead_zone) << 7;    //  right pressed dpad
          temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X) > dead_zone) << 7;      //  right pressed left stick
+=======
+        temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(0))) << 0;    //  A pressed
+        temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(1))) << 1;    //  B pressed
+        temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(2))) << 2;    //  select pressed
+        temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(3))) << 3;    //  start pressed
+        temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovY) > dead_zone) << 4;    //  up pressed dpad
+        temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::Y) < -dead_zone) << 4;     //  up pressed left stick
+        temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovY) < -dead_zone) << 5;   //  down pressed dpad
+        temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovY) > dead_zone) << 5;   //  down pressed left stick
+        temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovX) < -dead_zone) << 6;  //  left pressed dpad
+        temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X) < -dead_zone) << 6;     //  left pressed left stick
+        temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovX) > dead_zone) << 7;    //  right pressed dpad
+        temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X) > dead_zone) << 7;      //  right pressed left stick
+>>>>>>> Stashed changes
     }
     else {
         temp |= (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) << 0;    //  A pressed
@@ -263,10 +290,17 @@ void GUIClass::drawMenu() {
 
     }
     if (ImGui::BeginMenu("Settings")) {
+<<<<<<< Updated upstream
         if (ImGui::MenuItem("Set Controller Binds" ) && sf::Joystick::isConnected(0)) {
             showControllerDialog = true;
 
         }  
+=======
+        if (ImGui::MenuItem("Set Controller Binds") && sf::Joystick::isConnected(0)) {
+            showControllerDialog = true;
+
+        }
+>>>>>>> Stashed changes
 
         ImGui::EndMenu();
     }
@@ -276,9 +310,15 @@ void GUIClass::drawMenu() {
 }
 
 void::GUIClass::drawControllerDialog() {
+<<<<<<< Updated upstream
   
     ImGui::Begin("Controller Bindings", &showControllerDialog);  
     ImGui::Text("'A' is currently button: %d", this->controller->getButton(0));    
+=======
+
+    ImGui::Begin("Controller Bindings", &showControllerDialog);
+    ImGui::Text("'A' is currently button: %d", this->controller->getButton(0));
+>>>>>>> Stashed changes
     if (ImGui::Button("Rebind A")) { showButtonSet[0] = true; }
     ImGui::Text("'B' is currently button: %d", this->controller->getButton(1));
     if (ImGui::Button("Rebind B")) { showButtonSet[1] = true; }
@@ -287,6 +327,7 @@ void::GUIClass::drawControllerDialog() {
     ImGui::Text("'Start' is currently button: %d", this->controller->getButton(3));
     if (ImGui::Button("Rebind Start")) { showButtonSet[3] = true; }
     if (ImGui::Button("Save To ini")) { this->controller->setIni(); }
+<<<<<<< Updated upstream
             
     ImGui::End();          
         //a b select start   
@@ -294,6 +335,15 @@ void::GUIClass::drawControllerDialog() {
 
 void::GUIClass::drawSetButtons(int b) {
     switch (b){
+=======
+
+    ImGui::End();
+    //a b select start   
+}
+
+void::GUIClass::drawSetButtons(int b) {
+    switch (b) {
+>>>>>>> Stashed changes
     case 0:
         ImGui::Begin("A Binding", &showButtonSet[0]);
         ImGui::Text("'A' is currently button: %d", this->controller->getButton(0));
@@ -359,6 +409,8 @@ void GUIClass::drawSelectDebug() {
         ImGui::Checkbox(this->cpu_hex_windows.at(i).hex_name.c_str(), &this->cpu_hex_windows.at(i).isShown);
     for (uint32_t i = 0; i < this->ppu_hex_windows.size(); i++)
         ImGui::Checkbox(this->ppu_hex_windows.at(i).hex_name.c_str(), &this->ppu_hex_windows.at(i).isShown);
+    for (uint32_t i = 0; i < this->controller_hex_windows.size(); i++)
+        ImGui::Checkbox(this->controller_hex_windows.at(i).hex_name.c_str(), &this->controller_hex_windows.at(i).isShown);
     ImGui::End();
 
 }
@@ -391,6 +443,9 @@ void GUIClass::drawDebug() {
     for (uint32_t i = 0; i < this->ppu_hex_windows.size(); i++)
         if (this->ppu_hex_windows.at(i).isShown)
             this->ppu_hex_windows.at(i).hex_view->DrawWindow(this->ppu_hex_windows.at(i).hex_name.c_str(), (this->PPU->*this->ppu_hex_windows.at(i).getDataFunc)(), (this->PPU->*this->ppu_hex_windows.at(i).getSizeFunc)());
+    for (uint32_t i = 0; i < this->controller_hex_windows.size(); i++)
+        if (this->controller_hex_windows.at(i).isShown)
+            this->controller_hex_windows.at(i).hex_view->DrawWindow(this->controller_hex_windows.at(i).hex_name.c_str(), (this->controller->*this->controller_hex_windows.at(i).getDataFunc)(), (this->controller->*this->controller_hex_windows.at(i).getSizeFunc)());
 
 }
 

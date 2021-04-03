@@ -22,7 +22,11 @@ struct MemoryEditor;
 static bool showSelectDebug = false;
 static bool showFileDialog = false;
 static bool showControllerDialog = false;
+<<<<<<< Updated upstream
 static bool showButtonSet[]{ false, false, false, false};
+=======
+static bool showButtonSet[]{ false, false, false, false };
+>>>>>>> Stashed changes
 
 //	structs to contain everything needed to create the windows for the hex viewers
 //	split up based on component, because of the requirement for function pointers
@@ -59,6 +63,17 @@ struct PPUMemoryEditorContainer {
 
 };
 
+struct ControllerMemoryEditorContainer {
+
+	MemoryEditor* hex_view = nullptr;
+	std::string hex_name = "";
+	ControllerClass::getControllerData getDataFunc = nullptr;
+	ControllerClass::getControllerDataSize getSizeFunc = nullptr;
+	size_t hex_data_size = 0;
+	bool isShown = false;
+
+};
+
 class GUIClass {
 
 public:
@@ -69,6 +84,7 @@ public:
 	void addCartViewer(std::string windowName, CartridgeClass::GetCartData getData_ptr, CartridgeClass::getCartDataSize getSize_ptr);
 	void addCPUViewer(std::string windowName, CPUClass::getCPUData getData_ptr, CPUClass::getCPUDataSize getSize_ptr);
 	void addPPUViewer(std::string windowName, PPUClass::getPPUData getData_ptr, PPUClass::getPPUDataSize getSize_ptr);
+	void addControllerViewer(std::string windowName, ControllerClass::getControllerData getData_ptr, ControllerClass::getControllerDataSize getSize_ptr);
 
 	//	used to draw the current frame
 	void draw();
@@ -106,6 +122,7 @@ private:
 	std::vector<CartridgeMemoryEditorContainer> cart_hex_windows;
 	std::vector<CPUMemoryEditorContainer> cpu_hex_windows;
 	std::vector<PPUMemoryEditorContainer> ppu_hex_windows;
+	std::vector<ControllerMemoryEditorContainer> controller_hex_windows;
 
 	//	parts that we need for SFML
 	sf::RenderWindow window;
@@ -116,6 +133,7 @@ private:
 	CPUClass* CPU = nullptr;
 	PPUClass* PPU = nullptr;
 	CartridgeClass* cartridge = nullptr;
+	ControllerClass* controller = nullptr;
 
 	//	used to draw the menubar of the main window, called by draw
 	void drawMenu();
@@ -124,9 +142,14 @@ private:
 	void drawFileDialog();
 	void drawControllerDialog();
 	void drawSetButtons(int b);
+<<<<<<< Updated upstream
 
 	//Controller class pointer
 	ControllerClass* controller = nullptr;
+=======
+	
+	
+>>>>>>> Stashed changes
 
 };
 
