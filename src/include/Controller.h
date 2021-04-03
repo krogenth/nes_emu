@@ -16,25 +16,11 @@ public:
 	void setButton(int buttonIndex, uint8_t controllerButton);
 	void setIni();
 
-<<<<<<< Updated upstream
-=======
-	//	function pointers for GUI access to controller data
-	typedef void* (ControllerClass::* getControllerData)(void);
-	typedef size_t(ControllerClass::* getControllerDataSize)(void);
-
-	void* get_controller_piso() { return (void*)&(this->PISO); }
-	size_t get_controller_piso_size() { return 1; }
-
->>>>>>> Stashed changes
 
 
 	void loadGUI(GUIClass* _GUI) { this->GUI = _GUI; }
 
-<<<<<<< Updated upstream
 	
-=======
-
->>>>>>> Stashed changes
 
 private:
 	//	Parallel In, Serial Out storage of the controller
@@ -43,15 +29,9 @@ private:
 	bool strobe = false;
 	GUIClass* GUI = nullptr;
 	uint8_t buttons[4];
-<<<<<<< Updated upstream
 	
 
 	
-=======
-
-
-
->>>>>>> Stashed changes
 
 };
 

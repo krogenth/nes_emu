@@ -42,10 +42,6 @@ int main(int argc, char* argv[]) {
 	gui.addCartViewer("Cartridge PRG RAM", &CartridgeClass::get_prg_ram, &CartridgeClass::get_prg_ram_size);
 	gui.addCartViewer("Cartridge CHR ROM", &CartridgeClass::get_chr_rom, &CartridgeClass::get_chr_rom_size);
 
-<<<<<<< Updated upstream:vs/src/main.cpp
-=======
-	gui.addControllerViewer("PISO", &ControllerClass::get_controller_piso, &ControllerClass::get_controller_piso_size);
->>>>>>> Stashed changes:src/main.cpp
 
 	while (gui.shouldRender()) {
 

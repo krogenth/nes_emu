@@ -9,7 +9,6 @@ ControllerClass::ControllerClass() {
 
 		for (uint8_t i = 0; (i < 4) && !input.eof(); i++)
 			input >> this->buttons[i];
-<<<<<<< Updated upstream
 
 		input.close();
 
@@ -22,20 +21,6 @@ ControllerClass::ControllerClass() {
 		this->buttons[3] = 3;
 		this->setIni();
 
-=======
-
-		input.close();
-
-	}
-	else {
-
-		this->buttons[0] = 0;
-		this->buttons[1] = 1;
-		this->buttons[2] = 2;
-		this->buttons[3] = 3;
-		this->setIni();
-
->>>>>>> Stashed changes
 	}
 }
 ControllerClass::~ControllerClass() {
@@ -48,16 +33,9 @@ void ControllerClass::write(bool setStr) {
 	}
 
 	strobe = setStr;
-<<<<<<< Updated upstream
 
 }
 
-=======
-
-
-}
-
->>>>>>> Stashed changes
 uint8_t ControllerClass::read() {
 	//while strobe is high (true) keep reading A
 	if (strobe) {
