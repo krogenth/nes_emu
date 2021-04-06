@@ -32,6 +32,10 @@ Mapper001::Mapper001(romStruct* _rom) : MapperClass(_rom) {
 
 [[nodiscard]] uint8_t Mapper001::chr_read(uint16_t& address) {
 
+	//	safety check for CPU testing ROMs
+	if (this->rom->chr_rom.size() == 0)
+		return 0;
+
 	//	check if the address is in the first window section
 	if (address < 0x1000)
 		//	we want to window into a specific section at 4KB windows, so take the window offset, and multiply by 4096(0x1000)
@@ -89,6 +93,10 @@ uint8_t Mapper001::prg_write(uint16_t& address, const uint8_t& data) {
 }
 
 uint8_t Mapper001::chr_write(uint16_t& address, const uint8_t& data) {
+
+	//	safety check for CPU testing ROMs
+	if (this->rom->chr_rom.size() == 0)
+		return 0;
 
 	//	check if the address is in the first window section
 	if (address < 0x1000)

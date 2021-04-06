@@ -2,7 +2,7 @@
 
 #include ".\include\GUI.h"
 
-void ControllerClass::write() {
+void ControllerClass::write(bool data) {
 
 	//	Here we need to read the state of the keys pressed, and store them in the PISO shift register of the controller
 	this->PISO = this->GUI->getControllerState();
