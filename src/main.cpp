@@ -26,6 +26,7 @@ int main(int argc, char* argv[]) {
 
 	ppu.loadCartridge(&cartridge);
 	ppu.loadGUI(&gui);
+	ppu.loadCPU(&cpu);
 
 	//	give GUI access to relevant components it needs to access
 	gui.loadCPU(&cpu);
