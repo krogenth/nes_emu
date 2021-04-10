@@ -16,7 +16,7 @@ PPUClass::PPUClass() {
 	this->nametables.resize(0x0800);
 	this->palettes.resize(0x0020);
 	this->OAM.resize(0x0100);
-
+	
 }
 
 uint8_t PPUClass::access(uint16_t addr, uint8_t data, bool isWrite) {
@@ -101,7 +101,7 @@ void PPUClass::write(uint16_t addr, uint8_t& data) {
 
 	case 0x0006:
 		if (!this->latch)
-			this->tAddr.h = data & 0x03;
+			this->tAddr.h = data & 0x3f;
 		else {
 
 			this->tAddr.l = data;
@@ -129,7 +129,7 @@ uint8_t PPUClass::read(uint16_t addr) {
 	switch (addr) {
 
 	case 0x0002:
-		this->result = this->registers.STAT | (this->result & 0x1F);
+		this->result = (this->registers.STAT & 0xE0) | (this->result & 0x1F);
 		this->registers.STAT &= ~STAT_BITMASKS::VBLANK;
 		this->latch = false;
 		return this->result;
@@ -242,7 +242,6 @@ void PPUClass::cycle() {
 void PPUClass::pre_scanline() {
 
 	if (this->scanlinePixel == 1) {
-
 		this->registers.STAT &= ~(STAT_BITMASKS::S_OVERFLOW | STAT_BITMASKS::S_0_HIT);
 		this->registers.STAT &= ~STAT_BITMASKS::VBLANK;
 
@@ -253,7 +252,7 @@ void PPUClass::pre_scanline() {
 	if (this->scanlinePixel >= 280 || this->scanlinePixel <= 304)
 		this->vertical_update();
 	//	according to documentation, we skip over the last pixel on the prerendered scanline only on odd frames: https://wiki.nesdev.com/w/index.php/PPU_rendering#Pre-render_scanline_.28-1_or_261.29
-	else if (this->scanlinePixel == 339 && this->isOddFrame)
+	else if (this->scanlinePixel == 340 && this->isOddFrame)
 		this->scanlinePixel++;
 
 }
@@ -272,7 +271,7 @@ void PPUClass::frame_scanline() {
 		switch (this->scanlinePixel % 8) {
 
 			//	NT reads cost 2 cycles, so first grab the address, then read from it
-		case 1: this->clear_oam(); address = this->addressNT(); this->reload_shift(); break;
+		case 1: address = this->addressNT(); this->reload_shift(); break;
 		case 2: this->NT = this->access(address); break;
 
 			//	same as NT, AT reads cost 2 cycles, uses Loopy's
@@ -295,7 +294,10 @@ void PPUClass::frame_scanline() {
 
 	}
 	else if (this->scanlinePixel == 1)
+	{
+		this->clear_oam();
 		address = this->addressNT();
+	}
 	else if (this->scanlinePixel == 256) {
 
 		this->pixelDraw();
@@ -339,8 +341,10 @@ void PPUClass::blank_scanline() {
 		this->registers.STAT |= STAT_BITMASKS::VBLANK;
 
 		if (this->registers.CTRL & CTRL_BITMASKS::NMI)
+		{
 			this->CPU->setNMI(true);
-
+			// this->registers.CTRL = this->registers.CTRL & !CTRL_BITMASKS::NMI;
+		}
 	}
 
 }
@@ -469,7 +473,7 @@ void PPUClass::pixelDraw() {
 	if ((this->scanline < this->tvResolutionY[this->cartridge->getTV()]) && (x >= 0) && (x < 256)) {
 
 		//	background
-		if (this->registers.MASK & MASK_BITMASKS::BG_ENABLE && !(!((this->registers.MASK & MASK_BITMASKS::BG_LEFT_COL) && (x < 8)))) {
+		if (this->registers.MASK & MASK_BITMASKS::BG_ENABLE && !(!(this->registers.MASK & MASK_BITMASKS::BG_LEFT_COL) && (x < 8))) {
 
 			palette = (((this->bgShiftH >> (15 - this->fineX)) & 1) << 1) | ((this->bgShiftL >> (15 - this->fineX)) & 1);
 			if (palette)
@@ -478,11 +482,11 @@ void PPUClass::pixelDraw() {
 		}
 
 		//	sprites
-		if (this->registers.MASK & MASK_BITMASKS::S_ENABLE && !(!((this->registers.MASK & MASK_BITMASKS::S_LEFT_COL) && (x < 8)))) {
+		if (this->registers.MASK & MASK_BITMASKS::S_ENABLE && !(!(this->registers.MASK & MASK_BITMASKS::S_LEFT_COL) && (x < 8))) {
 
 			for (int8_t i = 7; i >= 0; i--) {
 
-				if (this->primaryOAM[i].id == 0xFF) continue;
+				if (this->primaryOAM[i].id == 0x40) continue;
 
 				uint32_t spriteX = x - this->primaryOAM[i].data.x;
 				if (spriteX >= 8) continue;

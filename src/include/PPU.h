@@ -184,7 +184,7 @@ protected:
 									0xBCBE00FF, 0x88D800FF, 0x5CE430FF, 0x45E082FF, 0x48CDDEFF, 0x4F4F4FFF, 0x000000FF, 0x000000FF,
 									0xFFFEFFFF, 0xC0DFFFFF, 0xd3D2FFFF, 0xE8C8FFFF, 0xFBC2FFFF, 0xFEC4EAFF, 0xFECCC5FF, 0xF7D8A5FF,
 									0xE4E594FF, 0xCFEF96FF, 0xBDf4ABFF, 0xB3F3CCFF, 0xB5EBF2FF, 0xB8B8B8FF, 0x000000FF, 0x000000FF };
-
+	
 	//	for OAM data, please see: https://wiki.nesdev.com/w/index.php/PPU_OAM#Internal_operation
 	//	in short, the secondary is filled by the OAM, which in turn initializes 8 internal sprite outputs
 	std::vector<uint8_t> OAM;
@@ -204,7 +204,7 @@ protected:
 	//	latch for determining if has been an register access already
 	bool latch = false;
 
-	//	
+	//	return value for read()
 	uint8_t result = 0;
 
 	//	Loopy's fineX
