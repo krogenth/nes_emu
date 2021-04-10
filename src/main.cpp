@@ -44,6 +44,8 @@ int main(int argc, char* argv[]) {
 	gui.addPPUViewer("PPU Nametables",&PPUClass::get_ppu_nametables,&PPUClass::get_ppu_nametables_size);
 	gui.addPPUViewer("PPU Regs", &PPUClass::get_ppu_regs, &PPUClass::get_ppu_regs_size);
 	gui.addPPUViewer("PPU OAM", &PPUClass::get_ppu_oam, &PPUClass::get_ppu_oam_size);
+	gui.addPPUViewer("PPU Primary OAM", &PPUClass::get_ppu_primary_oam, &PPUClass::get_ppu_oam_reg_size);
+	gui.addPPUViewer("PPU Secondary OAM", &PPUClass::get_ppu_secondary_oam, &PPUClass::get_ppu_oam_reg_size);
 	gui.addPPUViewer("PPU Palettes", &PPUClass::get_ppu_palettes, &PPUClass::get_ppu_palettes_size);
 
 	while (gui.shouldRender()) {

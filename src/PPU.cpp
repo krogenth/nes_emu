@@ -101,7 +101,7 @@ void PPUClass::write(uint16_t addr, uint8_t& data) {
 
 	case 0x0006:
 		if (!this->latch)
-			this->tAddr.h = data & 0x3f;
+			this->tAddr.h = data & 0x3F;
 		else {
 
 			this->tAddr.l = data;
@@ -242,6 +242,7 @@ void PPUClass::cycle() {
 void PPUClass::pre_scanline() {
 
 	if (this->scanlinePixel == 1) {
+
 		this->registers.STAT &= ~(STAT_BITMASKS::S_OVERFLOW | STAT_BITMASKS::S_0_HIT);
 		this->registers.STAT &= ~STAT_BITMASKS::VBLANK;
 
@@ -401,7 +402,7 @@ void PPUClass::clear_oam() {
 
 	for (uint8_t i = 0; i < 8; i++) {
 
-		this->secondaryOAM[i].id = 64;
+		this->secondaryOAM[i].id = 0x40;
 		this->secondaryOAM[i].data.y = 0xFF;
 		this->secondaryOAM[i].data.index = 0xFF;
 		this->secondaryOAM[i].data.attributes = 0xFF;
@@ -477,7 +478,7 @@ void PPUClass::pixelDraw() {
 
 			palette = (((this->bgShiftH >> (15 - this->fineX)) & 1) << 1) | ((this->bgShiftL >> (15 - this->fineX)) & 1);
 			if (palette)
-				palette |= (((this->bgShiftH >> (15 - this->fineX)) & 1) << 1) | (((this->bgShiftL >> (15 - this->fineX)) & 1) << 2);
+				palette |= ((((this->bgShiftH >> (7 - this->fineX)) & 1) << 1) | ((this->bgShiftL >> (7 - this->fineX)) & 1)) << 2;
 
 		}
 
