@@ -143,7 +143,7 @@ uint8_t GUIClass::getControllerState() {
          temp |= (sf::Joystick::getAxisPosition(0,sf::Joystick::Axis::PovY) > dead_zone) << 4;    //  up pressed dpad
          temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::Y) < -dead_zone) << 4;     //  up pressed left stick
          temp |= (sf::Joystick::getAxisPosition(0,sf::Joystick::Axis::PovY) < -dead_zone) << 5;   //  down pressed dpad
-         temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovY) > dead_zone) << 5;   //  down pressed left stick
+         temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::Y) > dead_zone) << 5;   //  down pressed left stick
          temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovX) < -dead_zone) << 6;  //  left pressed dpad
          temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X) < -dead_zone) << 6;     //  left pressed left stick
          temp |= (sf::Joystick::getAxisPosition(0,sf::Joystick::Axis::PovX) > dead_zone) << 7;    //  right pressed dpad

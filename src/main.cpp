@@ -13,10 +13,11 @@ const std::string PROG_NAME = "nes_emu";
 int main(int argc, char* argv[]) {
 
 	CPUClass cpu;
-	PPUClass ppu;
+	PPUClass ppu;	
 	ControllerClass controller;
 	CartridgeClass cartridge;
 	GUIClass gui(PROG_NAME);
+	
 
 	//	give CPU access to relevant components it needs to access
 	//	CPU needs to know about the cartridge, doesn't matter if a ROM is loaded or not
@@ -46,6 +47,9 @@ int main(int argc, char* argv[]) {
 	gui.addPPUViewer("PPU Regs", &PPUClass::get_ppu_regs, &PPUClass::get_ppu_regs_size);
 	gui.addPPUViewer("PPU OAM", &PPUClass::get_ppu_oam, &PPUClass::get_ppu_oam_size);
 	gui.addPPUViewer("PPU Palettes", &PPUClass::get_ppu_palettes, &PPUClass::get_ppu_palettes_size);
+
+	//  give controller gui access
+	controller.loadGUI(&gui);
 
 	while (gui.shouldRender()) {
 

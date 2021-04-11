@@ -116,6 +116,7 @@ private:
 	CPUClass* CPU = nullptr;
 	PPUClass* PPU = nullptr;
 	CartridgeClass* cartridge = nullptr;
+	ControllerClass* controller = nullptr;
 
 	//	used to draw the menubar of the main window, called by draw
 	void drawMenu();
@@ -125,8 +126,7 @@ private:
 	void drawControllerDialog();
 	void drawSetButtons(int b);
 
-	//Controller class pointer
-	ControllerClass* controller = nullptr;
+	
 
 };
 
