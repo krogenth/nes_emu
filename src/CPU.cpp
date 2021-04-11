@@ -1,9 +1,6 @@
-#include ".\include\CPU_Opcodes.h"
+#include <algorithm>
 
-#include ".\include\Cartridge.h"
-#include ".\include\PPU.h"
-#include ".\include\APU.h"
-#include ".\include\Controller.h"
+#include ".\include\CPU_Opcodes.h"
 
 #include ".\include\RomStruct.h"
 
@@ -30,39 +27,49 @@ CPUClass::~CPUClass() {
 
 void CPUClass::reset() {
 
+	//	resetting costs 7 cycles, but we access to start later, so cycle 5 times now
+	this->cycle(); this->cycle(); this->cycle(); this->cycle(); this->cycle();
+
 	//	see following for state of console after reset: https://wiki.nesdev.com/w/index.php/CPU_power_up_state
+
+	std::fill(this->RAM.begin(), this->RAM.end(), 0x00);
 
 	this->registers.reg_SP = 0xFD;
 	this->setFlag(CPU_FLAGS::Interrupt);
 
 	uint16_t addr = 0xFFFC;
-	this->registers.reg_PC = (uint16_t)this->access(addr) | ((uint16_t)this->access(addr + 1) << 8);
 
-	/*
-	we still need to cover the APU changes here:
-		APU mode in $4017 was unchanged
-		APU was silenced ($4015 = 0)
-		APU triangle phase is reset to 0 (i.e. outputs a value of 15, the first step of its waveform)
-		APU DPCM output ANDed with 1 (upper 6 bits cleared)
-		2A03G: APU Frame Counter reset. (but 2A03letterless: APU frame counter retains old value)
-	*/
+	//	2 accesses, 2 cycles
+	this->cycle(); this->cycle();
+	this->registers.reg_PC = (uint16_t)this->access(addr) | ((uint16_t)this->access(addr + 1) << 8);
 
 }
 
 void CPUClass::cycle() {
 
-	//this->PPU->cycle(); this->PPU->cycle(); this->PPU->cycle();
-
+	//	CPU_test does not add the PPU, it only tests the CPU, so do not cycle the PPU at all
+#ifndef CPU_LOGGING
 	//	here we can check the system type(NTSC vs PAL) and call the PPU an equivalent number of times
-	//this->PPU->cycle(); this->PPU->cycle();
+	this->PPU->cycle(); this->PPU->cycle(); this->PPU->cycle();
 	if ((this->cartridge->getTV() == tvEnum::PAL) && (this->cycleCount % 5 == 0)) {
 
 		//	PAL version has a PPU to CPU ratio of 3.2:1
-		//this->PPU->cycle();
+		this->PPU->cycle();
 
 	}
+#endif
 
 	this->cycleCount++;
+	this->remainingCycles--;
+
+}
+
+void CPUClass::runFrame() {
+
+	this->remainingCycles += this->getFrameCycles();
+
+	while (this->remainingCycles > 0)
+		this->execute();
 
 }
 
@@ -82,8 +89,8 @@ void CPUClass::execute() {
 	if (this->NMI_INT) {
 
 		this->handleNMI();
-
 		return;
+
 	}
 	if (this->IRQ_INT && (this->getFlagState(CPU_FLAGS::Interrupt) == false)) {
 
@@ -272,12 +279,6 @@ void CPUClass::execute() {
 
 }
 
-uint32_t CPUClass::getFrameCycles() {
-
-	return this->tvFrameCycleCount[this->cartridge->getTV()];
-
-}
-
 uint8_t CPUClass::access(uint16_t address, uint8_t data, bool isWrite) {
 
 	if (address <= 0x1FFF) {
@@ -290,47 +291,68 @@ uint8_t CPUClass::access(uint16_t address, uint8_t data, bool isWrite) {
 	else if (address <= 0x3FFF) {
 
 		//	PPU access
-		//return PPU->access(address, data, isWrite);
-		return 0;
+		if (isWrite)
+			this->PPU->write(address, data);
+		else
+			return this->PPU->read(address);
 
 	}
-	else if (address <= 0x4015) {
+	else if (address == 0x4014) {
+
+		//	PPU OAM DMA, can only write to this, see: https://wiki.nesdev.com/w/index.php/PPU_registers#OAM_DMA_.28.244014.29_.3E_write
+		if (isWrite) {
+
+			if (this->cycleCount & 1)
+				this->cycle();
+
+			for (uint32_t i = 0; i < 0x0100; i++) {
+
+				//	OAM DMA will write 256 bytes into the PPU's OAM memory
+				this->cycle();
+				uint8_t oamData = this->access((data * 0x0100) + i);
+				this->cycle();
+				this->PPU->write(0x2004, oamData);
+
+			}
+
+		}
+
+	}
+	else if (address == 0x4015) {
 
 		//	APU access
-		return 0;
 
 	}
 	else if (address == 0x4016) {
 
-		//	APU access or joystick 1
+		//	joystick 1 access
 		if (isWrite) {
 
 			//	verify that the controller is connected
-			if (this->controller)
+			if(this->controller)
 				this->controller->write(data & 1);
 			return 0;
 
 		}
 		if (this->controller)
 			return this->controller->read();
-		return 0;
 
 	}
 	else if (address == 0x4017) {
 
-		//	APU access or joystick 2
+		//	joystick 2 access
 		//	for now, we aren't even considering joystick 2
-		return 0;
 
 	}
 	else if (address <= 0x401F) {
 
-		//	typically disabled APU/IO access
-		return 0;
+		//	typically disabled, APU/IO access
 
 	}
 	else
 		return cartridge->prg_access(address, data, isWrite);
+
+	return 0;
 
 }
 

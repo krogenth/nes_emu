@@ -7,10 +7,8 @@ For all timing work, please see: http://obelisk.me.uk/6502/reference.html
 
 /*
 ADDRESSING MODES
-
 For all accesses, we must increment the program counter as well
 Every addressing mode returns an address for the opcodes to use
-
 To better understand the addressing modes and how they function,
 it is highly recommended to read the following links:
 http://www.obelisk.me.uk/6502/addressing.html
@@ -84,7 +82,7 @@ uint16_t addrMode_ABX(CPUClass& CPU) {	//	2-3 cycles
 	uint16_t addr = (uint16_t)addrMode_ABS(CPU);
 
 	//	crossing page boundaries costs a cycle
-	if((addr & 0xFF00) != ((addr + CPU.registers.reg_X) & 0xFF00))
+	if ((addr & 0xFF00) != ((addr + CPU.registers.reg_X) & 0xFF00))
 		CPU.cycle();
 
 	addr += CPU.registers.reg_X;
@@ -207,7 +205,7 @@ uint16_t addrMode_IND(CPUClass& CPU) {	//	4 cycles
 	//	we access twice here, so we need to cycle twice
 	CPU.cycle(); CPU.cycle();
 	//	the high byte access must wrap around to start of page(0xXX00) if addr ends in 0xXXFF
-	if((addr & 0x00FF) == 0x00FF)
+	if ((addr & 0x00FF) == 0x00FF)
 		return ((uint16_t)CPU.access(addr) | (uint16_t)(CPU.access((addr & 0xFF00)) << 8));
 	else
 		return ((uint16_t)CPU.access(addr) | (uint16_t)(CPU.access((addr + 1)) << 8));
@@ -368,7 +366,7 @@ template<addrMode mode> void CPUClass::BIT() {
 	//	bitwise operation costs a cycle
 	this->cycle();
 	this->updateZero((uint16_t)(this->registers.reg_A & data));
-	
+
 	//	update Negative flag
 	(data & 0b10000000) ? this->setFlag(CPU_FLAGS::Negative) : this->unsetFlag(CPU_FLAGS::Negative);
 
@@ -963,7 +961,10 @@ template<addrMode mode> void CPUClass::PHP() {
 
 	//	opcode costs 3 cycles total, push costs 1, so cycle 2 more times
 	mode(*this);
-	this->push(this->registers.reg_FL);
+
+	//	according to official_only.nes, PHP should have Decimal and B_Flag enabled when pushed onto the stack
+	//	but not enabled within the flags register
+	this->push(this->registers.reg_FL | CPU_FLAGS::B_flag | CPU_FLAGS::Unknown1);
 
 }
 
@@ -1538,25 +1539,19 @@ template<addrMode mode> void CPUClass::BRK() {
 	this->logFile << "BRK";
 #endif
 
-	//	needs to perform an interrupt here
-	//	set Interrupt flag
-	this->SEI<mode>();
+	this->registers.reg_PC++;
 
 	//	push the register Program Counter onto the stack
 	this->push((uint8_t)((this->registers.reg_PC & 0xFF00) >> 8));
 	this->push((uint8_t)(this->registers.reg_PC & 0x00FF));
 
 	//	for some reason, the BRK instruction sets the pushed status flags bits
-	//	5 and 6 to 1, so we can replicate that here
+	//	4 and 5 to 1, so we can replicate that here
 	//	see the following for why: https://wiki.nesdev.com/w/index.php/Status_flags#The_B_flag
-	this->setFlag(CPU_FLAGS::B_flag);
-	this->setFlag(CPU_FLAGS::Unknown2);
+	this->push(this->registers.reg_FL | CPU_FLAGS::B_flag | CPU_FLAGS::Unknown1);
 
-	this->push(this->registers.reg_FL);
-
-	//	since it is only the pushed status flag that has the bits set, we now unset them
-	this->unsetFlag(CPU_FLAGS::B_flag);
-	this->unsetFlag(CPU_FLAGS::Unknown2);
+	//	this is technically an interrupt, so we can disable interrupts
+	this->SEI<mode>();
 
 	mode(*this);
 	//	and we change the Program Counter to be at whatever FFFE points to

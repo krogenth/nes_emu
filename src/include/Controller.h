@@ -20,7 +20,7 @@ public:
 
 	void loadGUI(GUIClass* _GUI) { this->GUI = _GUI; }
 
-	
+
 
 private:
 	//	Parallel In, Serial Out storage of the controller
@@ -29,9 +29,9 @@ private:
 	bool strobe = false;
 	GUIClass* GUI = nullptr;
 	uint8_t buttons[4];
-	
 
-	
+
+
 
 };
 
