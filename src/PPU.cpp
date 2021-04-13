@@ -429,7 +429,7 @@ void PPUClass::evaluate_sprites() {
 			this->secondaryOAM[n].data.x = this->OAM[i * 4 + 3];
 
 			if (++n >= 8) {
-
+				// 8 or more sprites, so we set the Sprite Overflow bit in the Status register
 				this->registers.STAT |= STAT_BITMASKS::S_OVERFLOW;
 				break;
 
@@ -451,8 +451,12 @@ void PPUClass::load_sprites() {
 		if (this->sprite_height() == 16)
 			address = ((this->primaryOAM[i].data.index & 1) * 0x1000) + ((this->primaryOAM[i].data.index & ~1) * 16);
 		else
-			address = ((this->registers.CTRL & CTRL_BITMASKS::SPRITE) * 0x1000) + (this->primaryOAM[i].data.index * 16);
-
+		{
+			// We only care about the value of the Sprite bit in the control register.
+			// Bitshift right by 3 because it is the 3rd bit in the control register.
+			// Without the bitshift, we multiply by 0x8000 instead of 0x1000
+			address = (((this->registers.CTRL & CTRL_BITMASKS::SPRITE) >> 3) * 0x1000) + (this->primaryOAM[i].data.index * 16);
+		}
 		uint32_t spriteY = (this->scanline - this->primaryOAM[i].data.y) % this->sprite_height();
 		if (this->primaryOAM[i].data.attributes & 0x80)
 			spriteY ^= (this->sprite_height() - 1);
@@ -478,7 +482,7 @@ void PPUClass::pixelDraw() {
 
 			palette = (((this->bgShiftH >> (15 - this->fineX)) & 1) << 1) | ((this->bgShiftL >> (15 - this->fineX)) & 1);
 			if (palette)
-				palette |= ((((this->bgShiftH >> (7 - this->fineX)) & 1) << 1) | ((this->bgShiftL >> (7 - this->fineX)) & 1)) << 2;
+				palette |= ((((this->atShiftH >> (7 - this->fineX)) & 1) << 1) | ((this->atShiftL >> (7 - this->fineX)) & 1)) << 2;
 
 		}
 
