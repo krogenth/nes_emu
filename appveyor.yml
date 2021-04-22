@@ -13,4 +13,10 @@ configuration:
   - Release
 
 build_script:
+  - cd .\libs\sfml
+  - mkdir build
+  - cd .\build
+  - cmake -G "Visual Studio 14 2019" ..\
+  - MSBuild .\build\SFML.sln
+  - cd ..\..\..
   - MSBuild .\vs\nes.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
