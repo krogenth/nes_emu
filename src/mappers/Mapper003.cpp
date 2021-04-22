@@ -19,6 +19,10 @@ Mapper003::Mapper003(romStruct* _rom) : MapperClass(_rom) {
 
 [[nodiscard]] uint8_t Mapper003::chr_read(uint16_t& address) {
 
+	//	safety check for CPU testing ROMs
+	if (this->rom->chr_rom.size() == 0)
+		return 0;
+
 	return this->rom->chr_rom.at((size_t)address + ((size_t)this->chr_rom_window_1 * 0x2000));
 
 }
@@ -34,6 +38,10 @@ uint8_t Mapper003::prg_write(uint16_t& address, const uint8_t& data) {
 }
 
 uint8_t Mapper003::chr_write(uint16_t& address, const uint8_t& data) {
+
+	//	safety check for CPU testing ROMs
+	if (this->rom->chr_rom.size() == 0)
+		return 0;
 
 	return this->rom->chr_rom.at((size_t)address + ((size_t)this->chr_rom_window_1 * 0x2000)) = data;
 

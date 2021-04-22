@@ -8,7 +8,7 @@ class GUIClass;
 class ControllerClass {
 
 public:
-	void write();
+	void write(bool data);
 	uint8_t read();
 
 	void loadGUI(GUIClass* _GUI) { this->GUI = _GUI; }

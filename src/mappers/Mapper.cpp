@@ -8,6 +8,10 @@
 
 [[nodiscard]] uint8_t MapperClass::chr_read(uint16_t& address) {
 
+	//	safety check for CPU testing ROMs
+	if (this->rom->chr_rom.size() == 0)
+		return 0;
+
 	return this->rom->chr_rom.at(address);
 
 }

@@ -127,14 +127,14 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\libs\imgui\examples\libs\gl3w;..\..\libs\SDL2-2.0.14\include;..\..\libs\imgui;..\..\libs\imgui-filebrowser;..\..\libs\imgui_club;..\..\libs\imgui\backends</AdditionalIncludeDirectories>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\libs\imgui;..\..\libs\imgui-filebrowser;..\..\libs\imgui_club;..\..\libs\sfml\include;..\..\libs\imgui-sfml</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\libs\SDL2-2.0.14\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\libs\sfml\build\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;sfml-audio-d.lib;sfml-graphics-d.lib;sfml-system-d.lib;sfml-window-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -147,21 +147,19 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>..\..\libs\imgui-filebrowser;..\..\libs\imgui_club;..\..\libs\imgui\examples\libs\gl3w;..\..\libs\SDL2-2.0.14\include;..\..\libs\imgui;..\..\libs\imgui\backends</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\libs\imgui-filebrowser;..\..\libs\imgui_club;..\..\libs\imgui;..\..\libs\sfml\include;..\..\libs\imgui-sfml</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\libs\SDL2-2.0.14\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\libs\sfml\build\lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;sfml-audio.lib;sfml-graphics.lib;sfml-system.lib;sfml-window.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\libs\imgui\backends\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="..\..\libs\imgui\backends\imgui_impl_sdl.cpp" />
-    <ClCompile Include="..\..\libs\imgui\examples\libs\gl3w\GL\gl3w.c" />
+    <ClCompile Include="..\..\libs\imgui-sfml\imgui-SFML.cpp" />
     <ClCompile Include="..\..\libs\imgui\imgui.cpp" />
     <ClCompile Include="..\..\libs\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\libs\imgui\imgui_tables.cpp" />
@@ -171,6 +169,7 @@
     <ClCompile Include="..\..\src\Controller.cpp" />
     <ClCompile Include="..\..\src\CPU.cpp" />
     <ClCompile Include="..\..\src\GUI.cpp" />
+    <ClCompile Include="..\..\src\main.cpp" />
     <ClCompile Include="..\..\src\mappers\Mapper.cpp" />
     <ClCompile Include="..\..\src\mappers\Mapper000.cpp" />
     <ClCompile Include="..\..\src\mappers\Mapper001.cpp" />
@@ -178,13 +177,10 @@
     <ClCompile Include="..\..\src\mappers\Mapper003.cpp" />
     <ClCompile Include="..\..\src\Mapper_Collection.cpp" />
     <ClCompile Include="..\..\src\PPU.cpp" />
-    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\libs\imgui\backends\imgui_impl_opengl3.h" />
-    <ClInclude Include="..\..\libs\imgui\backends\imgui_impl_sdl.h" />
-    <ClInclude Include="..\..\libs\imgui\examples\libs\gl3w\GL\gl3w.h" />
-    <ClInclude Include="..\..\libs\imgui\examples\libs\gl3w\GL\glcorearb.h" />
+    <ClInclude Include="..\..\libs\imgui-sfml\imgui-SFML.h" />
+    <ClInclude Include="..\..\libs\imgui-sfml\imgui-SFML_export.h" />
     <ClInclude Include="..\..\libs\imgui\imconfig.h" />
     <ClInclude Include="..\..\libs\imgui\imgui.h" />
     <ClInclude Include="..\..\libs\imgui\imgui_internal.h" />
@@ -207,6 +203,13 @@
     <ClInclude Include="..\..\src\include\Mapper_Collection.h" />
     <ClInclude Include="..\..\src\include\PPU.h" />
     <ClInclude Include="..\..\src\include\RomStruct.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="nes.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="nes.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
