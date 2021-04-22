@@ -7,18 +7,31 @@ An Open Source NES Emulator using C++17.
 
 ## How to build
 
-first fetch the source code:
+first ensure you have the tools required to compile:
+
+	[Visual Studio 2019](https://visualstudio.microsoft.com/vs/)
+	[cmake](https://cmake.org/)
+
+second, open the "x64 Native Tools Command Prompt for VS 2019"
+
+third, fetch the source code and libraries:
 
     git clone https://github.com/krogenth/nes_emu.git
-    
     cd nes_emu
-    
     git submodule update --init --recursive
 
-### Windows with Visual Studio
+last, compile the source code:
 
-Open the .sln file contained in ./vs/
+    cd libs/sfml
+    mkdir build
+    cd build
+    cmake -G "Visual Studio 16 2019" ..\
+    MSBuild SFML.sln /property:configuration=Release /property:Platform=x64
+    cd ..\..\..
+    MSBuild vs/nes.sln /property:configuration=Release /property:Platform=x64
+	
+if compiling this way is not desired, users may use the build.bat provided to automate the build instead
 
-Build desired projects
+### Where to find the binaries
 
-All executables will be in ./vs/x64/Release or ./vs/x64/Debug
+all binary files can be found within ./vs/x64/Release
