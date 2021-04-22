@@ -27,7 +27,6 @@ int main(int argc, char* argv[]) {
 
 	ppu.loadCartridge(&cartridge);
 	ppu.loadGUI(&gui);
-	ppu.loadCPU(&cpu);
 
 	//	give GUI access to relevant components it needs to access
 	gui.loadCPU(&cpu);
@@ -43,10 +42,6 @@ int main(int argc, char* argv[]) {
 	gui.addCartViewer("Cartridge PRG RAM", &CartridgeClass::get_prg_ram, &CartridgeClass::get_prg_ram_size);
 	gui.addCartViewer("Cartridge CHR ROM", &CartridgeClass::get_chr_rom, &CartridgeClass::get_chr_rom_size);
 
-	gui.addPPUViewer("PPU Nametables",&PPUClass::get_ppu_nametables,&PPUClass::get_ppu_nametables_size);
-	gui.addPPUViewer("PPU Regs", &PPUClass::get_ppu_regs, &PPUClass::get_ppu_regs_size);
-	gui.addPPUViewer("PPU OAM", &PPUClass::get_ppu_oam, &PPUClass::get_ppu_oam_size);
-	gui.addPPUViewer("PPU Palettes", &PPUClass::get_ppu_palettes, &PPUClass::get_ppu_palettes_size);
 
 	//  give controller gui access
 	controller.loadGUI(&gui);
