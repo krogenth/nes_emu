@@ -334,7 +334,7 @@ uint8_t CPUClass::access(uint16_t address, uint8_t data, bool isWrite) {
 			return 0;
 
 		}
-		if(this->controller)
+		if (this->controller)
 			return this->controller->read();
 
 	}

@@ -13,10 +13,11 @@ const std::string PROG_NAME = "nes_emu";
 int main(int argc, char* argv[]) {
 
 	CPUClass cpu;
-	PPUClass ppu;
+	PPUClass ppu;	
 	ControllerClass controller;
 	CartridgeClass cartridge;
 	GUIClass gui(PROG_NAME);
+	
 
 	//	give CPU access to relevant components it needs to access
 	//	CPU needs to know about the cartridge, doesn't matter if a ROM is loaded or not
@@ -31,6 +32,7 @@ int main(int argc, char* argv[]) {
 	gui.loadCPU(&cpu);
 	gui.loadPPU(&ppu);
 	gui.loadCartridge(&cartridge);
+	gui.loadController(&controller);
 
 	//	give the GUI the information it needs in order to create the windows for the various memory spaces
 	gui.addCPUViewer("CPU RAM", &CPUClass::get_cpu_ram, &CPUClass::get_cpu_ram_size);
@@ -39,6 +41,10 @@ int main(int argc, char* argv[]) {
 	gui.addCartViewer("Cartridge PRG ROM", &CartridgeClass::get_prm_rom, &CartridgeClass::get_prm_rom_size);
 	gui.addCartViewer("Cartridge PRG RAM", &CartridgeClass::get_prg_ram, &CartridgeClass::get_prg_ram_size);
 	gui.addCartViewer("Cartridge CHR ROM", &CartridgeClass::get_chr_rom, &CartridgeClass::get_chr_rom_size);
+
+
+	//  give controller gui access
+	controller.loadGUI(&gui);
 
 	while (gui.shouldRender()) {
 

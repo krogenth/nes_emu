@@ -79,13 +79,13 @@ void PPUClass::write(uint16_t addr, uint8_t& data) {
 }
 
 void PPUClass::loadCartridge(CartridgeClass* _cartridge) {
-	
+
 	this->cartridge = _cartridge;
 
 }
 
 void PPUClass::loadGUI(GUIClass* _GUI) {
-	
+
 	this->GUI = _GUI;
 
 }

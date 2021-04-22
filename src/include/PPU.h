@@ -4,7 +4,7 @@
 #include <cinttypes>
 #include <tuple>
 
-enum mirrorEnum: uint8_t;
+enum mirrorEnum : uint8_t;
 
 class CartridgeClass;
 class GUIClass;
@@ -23,33 +23,33 @@ struct Sprite {
 //	flags for stating the bit ordering of registers
 enum CTRL_BITMASKS : uint8_t {
 
-	NAMETABLE  = 0b00000011,		//	0 = 0x2000, 1 = 0x2400, 2 = 0x2800, 3 = 0x2C00
-	INCREMENT  = 0b00000100,		//	VRAM increment per CPU read/write of PPUDATA: 0 = +1, 1 = +32
-	SPRITE     = 0b00001000,		//	Sprite pattern table address, for 8x8 sprites(ignored in 8x16 mode): 0 = 0x0000, 1 = 0x1000
+	NAMETABLE = 0b00000011,		//	0 = 0x2000, 1 = 0x2400, 2 = 0x2800, 3 = 0x2C00
+	INCREMENT = 0b00000100,		//	VRAM increment per CPU read/write of PPUDATA: 0 = +1, 1 = +32
+	SPRITE = 0b00001000,		//	Sprite pattern table address, for 8x8 sprites(ignored in 8x16 mode): 0 = 0x0000, 1 = 0x1000
 	BACKGROUND = 0b00010000,		//	Background pattern table address: 0 = 0x0000, 1 = 0x1000
-	S_HEIGHT   = 0b00100000,		//	Sprite size: 0 = 8x8, 1 = 8x16
-	MASTER     = 0b01000000,		//	PPU Master/Slave selection: 0 = read backdrop from EXT, 1 = write backdrop to EXT
-	NMI        = 0b10000000			//	Generate NMI at start of vertical blanking: 0 = false, 1 = true
+	S_HEIGHT = 0b00100000,		//	Sprite size: 0 = 8x8, 1 = 8x16
+	MASTER = 0b01000000,		//	PPU Master/Slave selection: 0 = read backdrop from EXT, 1 = write backdrop to EXT
+	NMI = 0b10000000			//	Generate NMI at start of vertical blanking: 0 = false, 1 = true
 
 };
 
 enum MASK_BITMASKS : uint8_t {
 
-	GREYSCALE   = 0b00000001,
+	GREYSCALE = 0b00000001,
 	BG_LEFT_COL = 0b00000010,
-	S_LEFT_COL  = 0b00000100,
-	BG_ENABLE   = 0b00001000,
-	S_ENABLE    = 0b00010000,
-	COLOR_EMPH  = 0b11100000
+	S_LEFT_COL = 0b00000100,
+	BG_ENABLE = 0b00001000,
+	S_ENABLE = 0b00010000,
+	COLOR_EMPH = 0b11100000
 
 };
 
 enum STAT_BITMASKS : uint8_t {
 
-	UNUSED     = 0b00011111,
+	UNUSED = 0b00011111,
 	S_OVERFLOW = 0b00100000,
-	S_0_HIT    = 0b01000000,
-	VBLANK     = 0b10000000
+	S_0_HIT = 0b01000000,
+	VBLANK = 0b10000000
 
 };
 
@@ -98,7 +98,7 @@ protected:
 	uint32_t tvResolutionX[2] = { 256, 256 };
 	uint32_t tvResolutionY[2] = { 240, 288 };
 	uint32_t tvFrameRate[2] = { 60, 50 };		//	it does 1/2 frames at Xfps, but full frame is X/2fps
-	
+
 	PPU_Registers registers;
 
 	Sprite OAM[64];
