@@ -9,8 +9,8 @@ An Open Source NES Emulator using C++17.
 
 first ensure you have the tools required to compile:
 
-Visual Studio 2019(https://visualstudio.microsoft.com/vs/)
-cmake(https://cmake.org/)
+	Visual Studio 2019(https://visualstudio.microsoft.com/vs/)
+	cmake(https://cmake.org/)
 
 second, open the "x64 Native Tools Command Prompt for VS 2019"
 
