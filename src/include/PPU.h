@@ -225,21 +225,32 @@ protected:
 	//	used to access Cartridge or RAM
 	uint8_t access(uint16_t addr, uint8_t data = 0, bool isWrite = false);
 
-	void pre_scanline();
-	void frame_scanline();
-	void post_scanline();
-	void blank_scanline();
+	// Scanlines
+	void pre_scanline();	// scanline -1
+	void frame_scanline();	// scanline 0 through 239
+	void post_scanline();	// scanline 240 
+	void blank_scanline();	// scanline 241 through 260
 
 	bool rendering() { return ((this->registers.MASK & MASK_BITMASKS::BG_ENABLE) || (this->registers.MASK & MASK_BITMASKS::S_ENABLE)); }
 	uint32_t sprite_height() { return (this->registers.CTRL & CTRL_BITMASKS::S_HEIGHT) ? 16 : 8; }
 
+	// Nametable
 	uint16_t addressNT() { return (0x2000 | (this->vAddr.r & 0x0FFF)); }
-	uint16_t addressAT() { return (0x23C0 | (this->vAddr.nt << 10) | ((this->vAddr.cY / 4) << 3) | (this->vAddr.cX / 4)); }
-	uint16_t addressBG() { return (((this->registers.CTRL & CTRL_BITMASKS::BACKGROUND) * 0x1000) + (this->NT * 16) + this->vAddr.fY); }
 
+	// Attributes
+	uint16_t addressAT() { return (0x23C0 | (this->vAddr.nt << 10) | ((this->vAddr.cY / 4) << 3) | (this->vAddr.cX / 4)); }
+
+	// Background
+	// Only the value of the Background bit in the control register matters.
+	// Bitshift right by 4 because it is the 4th bit in the control register.
+	// Without the bitshift, it will multiply by 0x10000 instead of 0x1000
+	uint16_t addressBG() { return ((((this->registers.CTRL & CTRL_BITMASKS::BACKGROUND) >> 4) * 0x1000) + (this->NT * 16) + this->vAddr.fY); }
+
+	// Scrolls
 	void horizontal_scroll();
 	void vertical_scroll();
 
+	// Updates
 	void horizontal_update() { if (!this->rendering()) return; this->vAddr.r = ((this->vAddr.r & ~0x041F) | (this->tAddr.r & 0x041F)); }
 	void vertical_update() { if (!this->rendering()) return; this->vAddr.r = ((this->vAddr.r & ~0x7BE0) | (this->tAddr.r & 0x7BE0)); }
 
@@ -252,6 +263,11 @@ protected:
 	void pixelDraw();
 
 	uint16_t addressMirrorAdjust(uint16_t addr);
+
+	// Change Register Values
+	void SetRegisterBits(uint8_t &ppuRegister, uint8_t ppuBitmask);
+	void ClearRegisterBits(uint8_t &ppuRegister, uint8_t ppuBitmask);
+	void ResetRegister(uint8_t& ppuRegister);
 
 };
 

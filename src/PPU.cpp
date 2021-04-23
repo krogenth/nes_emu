@@ -22,10 +22,10 @@ PPUClass::PPUClass() {
 uint8_t PPUClass::access(uint16_t addr, uint8_t data, bool isWrite) {
 
 	//	see the following for the PPU memory layout: https://wiki.nesdev.com/w/index.php/PPU_memory_map
-	if (addr < 0x2000)
+	if (addr < 0x2000) // CHR-ROM or CHR-RAM
 		return this->cartridge->chr_access(addr, data, isWrite);
-	else if (addr < 0x3EFF) {
-
+	else if (addr <= 0x3EFF) { // Nametable memory
+		
 		if (isWrite) {
 
 			this->nametables[this->addressMirrorAdjust(addr)] = data;
@@ -36,7 +36,7 @@ uint8_t PPUClass::access(uint16_t addr, uint8_t data, bool isWrite) {
 		return this->nametables[this->addressMirrorAdjust(addr)];
 
 	}
-	else if (addr < 0x3FFF) {
+	else if (addr <= 0x3FFF) { // Palette Memory
 
 		if (isWrite) {
 
@@ -66,24 +66,24 @@ void PPUClass::write(uint16_t addr, uint8_t& data) {
 
 	switch (addr) {
 
-	case 0x0000:
+	case 0x0000: // CTRL Register
 		this->registers.CTRL = data;
 		this->tAddr.nt = this->registers.CTRL & CTRL_BITMASKS::NAMETABLE;
 		break;
 
-	case 0x0001:
+	case 0x0001: // MASK Register
 		this->registers.MASK = data;
 		break;
 
-	case 0x0003:
+	case 0x0003: // OAMADDR Register
 		this->registers.OAMADDR = data;
 		break;
 
-	case 0x0004:
+	case 0x0004: // OAMDATA Register
 		this->OAM[this->registers.OAMADDR++] = data;
 		break;
 
-	case 0x0005:
+	case 0x0005: // PPUSCROLL Register
 		if (!this->latch) {
 
 			this->fineX = data & 7;
@@ -99,7 +99,7 @@ void PPUClass::write(uint16_t addr, uint8_t& data) {
 		this->latch = !this->latch;
 		break;
 
-	case 0x0006:
+	case 0x0006: // PPUADDR Register
 		if (!this->latch)
 			this->tAddr.h = data & 0x3F;
 		else {
@@ -111,7 +111,7 @@ void PPUClass::write(uint16_t addr, uint8_t& data) {
 		this->latch = !this->latch;
 		break;
 
-	case 0x0007:
+	case 0x0007: // PPUDATA Register
 		this->access(this->vAddr.addr, data, true);
 		this->vAddr.addr += (this->registers.CTRL & CTRL_BITMASKS::INCREMENT) ? 32 : 1;
 		break;
@@ -128,16 +128,18 @@ uint8_t PPUClass::read(uint16_t addr) {
 
 	switch (addr) {
 
-	case 0x0002:
+	case 0x0002: // STATUS Register
 		this->result = (this->registers.STAT & 0xE0) | (this->result & 0x1F);
-		this->registers.STAT &= ~STAT_BITMASKS::VBLANK;
+
+		ClearRegisterBits(this->registers.STAT, STAT_BITMASKS::VBLANK);
+		// this->registers.STAT &= ~STAT_BITMASKS::VBLANK;
 		this->latch = false;
 		return this->result;
 
-	case 0x0004:
+	case 0x0004: // OAMDATA Register
 		return this->result = this->OAM[this->registers.OAMADDR];
 
-	case 0x0007:
+	case 0x0007: // PPUDATA Register
 		this->result = buffer;
 		buffer = this->access(this->vAddr.addr);
 		if (this->vAddr.addr >= 0x3F00)
@@ -161,6 +163,7 @@ std::tuple<uint32_t, uint32_t> PPUClass::getResolution() {
 	}
 	catch (const MapperException& e) {
 
+		// Can be replaced with error logging once merged.
 		std::cout << e.what() << '\n';		//	placeholder until a better solution is created, we should really use a log file instead
 		return std::make_tuple(0, 0);
 
@@ -177,6 +180,7 @@ uint32_t PPUClass::getTVFrameRate() {
 	}
 	catch (const MapperException& e) {
 
+		// Can be replaced with error logging once merged.
 		std::cout << e.what() << '\n';		//	placeholder until a better solution is created, we should really use a log file instead
 		return 0;
 
@@ -190,19 +194,23 @@ void PPUClass::reset() {
 
 	this->isOddFrame = false;
 
-	this->registers.CTRL = 0b00000000;
-	this->registers.MASK = 0b00000000;
-	this->registers.STAT = 0b00000000;
+	// Reset all Registers.
+	ResetRegister(this->registers.CTRL);
+	ResetRegister(this->registers.MASK);
+	ResetRegister(this->registers.STAT);
+	// this->registers.CTRL = 0b00000000;
+	// this->registers.MASK = 0b00000000;
+	// this->registers.STAT = 0b00000000;
 
 	std::fill(this->OAM.begin(), this->OAM.end(), 0x00);
 	std::fill(this->nametables.begin(), this->nametables.end(), 0xFF);
 
-	//	we also need to reset the scanline and current pixel
+	//	Also need to reset the scanline and current pixel
 	this->scanline = 0;
 	this->scanlinePixel = 0;
 
-	//	we need to also reset the pixels here, to ensure the screen is the proper size based on the type of ROM(NTSC vs. PAL)
-	//this->pixels.resize(this->tvResolutionX[this->cartridge->getTV()] * this->tvResolutionY[this->cartridge->getTV()]);
+	// Also need to reset the pixels here, to ensure the screen is the proper size based on the type of ROM(NTSC vs. PAL)
+	//this->pixels.resize(this->tvResolutionX[this->cartridge->getTV()] * this->tvResolutionY[this->cartridge->getTV()]); unused / alternative implementation of the line below.
 	this->pixels.create(this->tvResolutionX[this->cartridge->getTV()], this->tvResolutionY[this->cartridge->getTV()]);
 
 }
@@ -242,14 +250,18 @@ void PPUClass::cycle() {
 void PPUClass::pre_scanline() {
 
 	if (this->scanlinePixel == 1) {
-
-		this->registers.STAT &= ~(STAT_BITMASKS::S_OVERFLOW | STAT_BITMASKS::S_0_HIT);
-		this->registers.STAT &= ~STAT_BITMASKS::VBLANK;
+		// Clear the Status register without disturbing the unused bits.
+		ClearRegisterBits(this->registers.STAT, (STAT_BITMASKS::S_0_HIT | STAT_BITMASKS::S_OVERFLOW));
+		ClearRegisterBits(this->registers.STAT, STAT_BITMASKS::VBLANK);
+		// this->registers.STAT &= ~(STAT_BITMASKS::S_OVERFLOW | STAT_BITMASKS::S_0_HIT);
+		// this->registers.STAT &= ~STAT_BITMASKS::VBLANK;
 
 	}
 	//	prerender piggybacks off the rendered, because the PPU still does accesses before the frame happens
 	this->frame_scanline();
 
+	// Copy vertical bits from t to v between pixels 280 and 304 in the pre-scanline
+	// according to documentation at: https://wiki.nesdev.com/w/index.php/PPU_scrolling#During_dots_280_to_304_of_the_pre-render_scanline_.28end_of_vblank.29
 	if (this->scanlinePixel >= 280 || this->scanlinePixel <= 304)
 		this->vertical_update();
 	//	according to documentation, we skip over the last pixel on the prerendered scanline only on odd frames: https://wiki.nesdev.com/w/index.php/PPU_rendering#Pre-render_scanline_.28-1_or_261.29
@@ -271,11 +283,11 @@ void PPUClass::frame_scanline() {
 		//	for the visible segment, there are only 8 different possibilities that can happen
 		switch (this->scanlinePixel % 8) {
 
-			//	NT reads cost 2 cycles, so first grab the address, then read from it
+		//	NT reads cost 2 cycles, so first grab the address, then read from it
 		case 1: address = this->addressNT(); this->reload_shift(); break;
 		case 2: this->NT = this->access(address); break;
 
-			//	same as NT, AT reads cost 2 cycles, uses Loopy's
+		//	same as NT, AT reads cost 2 cycles, uses Loopy's
 		case 3: address = this->addressAT(); break;
 		case 4:
 			this->AT = this->access(address);
@@ -285,9 +297,13 @@ void PPUClass::frame_scanline() {
 				this->AT >>= 2;
 			break;
 
-			//	background is broken up into 2 parts, so this will take 4 cycles to perform
+		// Background is broken up into 2 parts, so this will take 4 cycles to perform
+		
+		// Background lower byte
 		case 5: address = this->addressBG(); break;
 		case 6: this->BGL = this->access(address); break;
+
+		// Background upper byte
 		case 7: address += 8; break;
 		case 0: this->BGH = this->access(address); this->horizontal_scroll(); break;
 
@@ -300,14 +316,16 @@ void PPUClass::frame_scanline() {
 		address = this->addressNT();
 	}
 	else if (this->scanlinePixel == 256) {
-
+		// At pixel 256 we vertical scroll to wrap to the next nametable appropriately
+		// For more info: https://wiki.nesdev.com/w/index.php/PPU_scrolling#At_dot_256_of_each_scanline
 		this->pixelDraw();
 		this->BGH = this->access(address);
 		this->vertical_scroll();
 
 	}
 	else if (this->scanlinePixel == 257) {
-
+		// At pixel 257 we copy the bits related to horizontal position from t to v.
+		// For more info: https://wiki.nesdev.com/w/index.php/PPU_scrolling#At_dot_257_of_each_scanline
 		this->evaluate_sprites();
 		this->pixelDraw();
 		this->reload_shift();
@@ -339,12 +357,14 @@ void PPUClass::blank_scanline() {
 
 	if (this->scanlinePixel == 1) {
 
-		this->registers.STAT |= STAT_BITMASKS::VBLANK;
+		// Set VBlank flag
+		SetRegisterBits(this->registers.STAT, STAT_BITMASKS::VBLANK);
+		// this->registers.STAT |= STAT_BITMASKS::VBLANK;
 
 		if (this->registers.CTRL & CTRL_BITMASKS::NMI)
 		{
 			this->CPU->setNMI(true);
-			// this->registers.CTRL = this->registers.CTRL & !CTRL_BITMASKS::NMI;
+			// this->registers.CTRL = this->registers.CTRL & !CTRL_BITMASKS::NMI; unnecessary
 		}
 	}
 
@@ -430,7 +450,8 @@ void PPUClass::evaluate_sprites() {
 
 			if (++n >= 8) {
 				// 8 or more sprites, so we set the Sprite Overflow bit in the Status register
-				this->registers.STAT |= STAT_BITMASKS::S_OVERFLOW;
+				SetRegisterBits(this->registers.STAT, STAT_BITMASKS::S_OVERFLOW);
+				// this->registers.STAT |= STAT_BITMASKS::S_OVERFLOW;
 				break;
 
 			}
@@ -446,15 +467,17 @@ void PPUClass::load_sprites() {
 	uint16_t address = 0;
 	for (uint8_t i = 0; i < 8; i++) {
 
+		// Copy the secondary OAM to the primary OAM
 		this->primaryOAM[i] = this->secondaryOAM[i];
 
+		// We use a different addressing mode for sprites that are 16 pixels tall.
 		if (this->sprite_height() == 16)
 			address = ((this->primaryOAM[i].data.index & 1) * 0x1000) + ((this->primaryOAM[i].data.index & ~1) * 16);
 		else
 		{
-			// We only care about the value of the Sprite bit in the control register.
+			// Only the value of the Sprite bit in the control register matters.
 			// Bitshift right by 3 because it is the 3rd bit in the control register.
-			// Without the bitshift, we multiply by 0x8000 instead of 0x1000
+			// Without the bitshift, it will multiply by 0x8000 instead of 0x1000
 			address = (((this->registers.CTRL & CTRL_BITMASKS::SPRITE) >> 3) * 0x1000) + (this->primaryOAM[i].data.index * 16);
 		}
 		uint32_t spriteY = (this->scanline - this->primaryOAM[i].data.y) % this->sprite_height();
@@ -463,7 +486,7 @@ void PPUClass::load_sprites() {
 		address += spriteY + (spriteY & 8);
 
 		this->primaryOAM[i].dataL = this->access(address);
-		this->primaryOAM[i].dataH = this->access(address + 8);
+		this->primaryOAM[i].dataH = this->access(address + 8); // Add 8 because we're storing into the higher order byte
 
 	}
 
@@ -536,4 +559,19 @@ uint16_t PPUClass::addressMirrorAdjust(uint16_t addr) {
 
 	}
 
+}
+
+void PPUClass::SetRegisterBits(uint8_t &ppuRegister, uint8_t ppuBitmask)
+{
+	ppuRegister |= ppuBitmask;
+}
+
+void PPUClass::ClearRegisterBits(uint8_t &ppuRegister, uint8_t ppuBitmask)
+{
+	ppuRegister &= ~ppuBitmask;
+}
+
+void PPUClass::ResetRegister(uint8_t &ppuRegister)
+{
+	ppuRegister = 0b00000000;
 }
