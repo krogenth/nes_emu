@@ -132,7 +132,6 @@ uint8_t PPUClass::read(uint16_t addr) {
 		this->result = (this->registers.STAT & 0xE0) | (this->result & 0x1F);
 
 		ClearRegisterBits(this->registers.STAT, STAT_BITMASKS::VBLANK);
-		// this->registers.STAT &= ~STAT_BITMASKS::VBLANK;
 		this->latch = false;
 		return this->result;
 
@@ -198,10 +197,8 @@ void PPUClass::reset() {
 	ResetRegister(this->registers.CTRL);
 	ResetRegister(this->registers.MASK);
 	ResetRegister(this->registers.STAT);
-	// this->registers.CTRL = 0b00000000;
-	// this->registers.MASK = 0b00000000;
-	// this->registers.STAT = 0b00000000;
-
+	
+	// Clear out the OAM and nametable data
 	std::fill(this->OAM.begin(), this->OAM.end(), 0x00);
 	std::fill(this->nametables.begin(), this->nametables.end(), 0xFF);
 
@@ -210,7 +207,6 @@ void PPUClass::reset() {
 	this->scanlinePixel = 0;
 
 	// Also need to reset the pixels here, to ensure the screen is the proper size based on the type of ROM(NTSC vs. PAL)
-	//this->pixels.resize(this->tvResolutionX[this->cartridge->getTV()] * this->tvResolutionY[this->cartridge->getTV()]); unused / alternative implementation of the line below.
 	this->pixels.create(this->tvResolutionX[this->cartridge->getTV()], this->tvResolutionY[this->cartridge->getTV()]);
 
 }
@@ -253,9 +249,6 @@ void PPUClass::pre_scanline() {
 		// Clear the Status register without disturbing the unused bits.
 		ClearRegisterBits(this->registers.STAT, (STAT_BITMASKS::S_0_HIT | STAT_BITMASKS::S_OVERFLOW));
 		ClearRegisterBits(this->registers.STAT, STAT_BITMASKS::VBLANK);
-		// this->registers.STAT &= ~(STAT_BITMASKS::S_OVERFLOW | STAT_BITMASKS::S_0_HIT);
-		// this->registers.STAT &= ~STAT_BITMASKS::VBLANK;
-
 	}
 	//	prerender piggybacks off the rendered, because the PPU still does accesses before the frame happens
 	this->frame_scanline();
@@ -359,12 +352,10 @@ void PPUClass::blank_scanline() {
 
 		// Set VBlank flag
 		SetRegisterBits(this->registers.STAT, STAT_BITMASKS::VBLANK);
-		// this->registers.STAT |= STAT_BITMASKS::VBLANK;
-
-		if (this->registers.CTRL & CTRL_BITMASKS::NMI)
+		
+		if (this->registers.CTRL & CTRL_BITMASKS::NMI) // if NMI is set
 		{
 			this->CPU->setNMI(true);
-			// this->registers.CTRL = this->registers.CTRL & !CTRL_BITMASKS::NMI; unnecessary
 		}
 	}
 
@@ -451,7 +442,6 @@ void PPUClass::evaluate_sprites() {
 			if (++n >= 8) {
 				// 8 or more sprites, so we set the Sprite Overflow bit in the Status register
 				SetRegisterBits(this->registers.STAT, STAT_BITMASKS::S_OVERFLOW);
-				// this->registers.STAT |= STAT_BITMASKS::S_OVERFLOW;
 				break;
 
 			}
@@ -535,7 +525,6 @@ void PPUClass::pixelDraw() {
 
 		if (objPalette && ((palette == 0) || (objPriority == 0))) palette = objPalette;
 
-		//this->pixels[(scanline * this->tvResolutionX[this->cartridge->getTV()]) + x] = this->paletteColors[this->access(0x3F00 + (this->rendering() ? palette : 0))];
 		uint16_t address = 0x3F00 + (this->rendering() ? palette : 0);
 		uint8_t data = this->access(address);
 		this->pixels.setPixel(x, this->scanline, sf::Color(this->paletteColors[data]));
