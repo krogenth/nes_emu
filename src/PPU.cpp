@@ -22,7 +22,7 @@ PPUClass::PPUClass() {
 uint8_t PPUClass::access(uint16_t addr, uint8_t data, bool isWrite) {
 
 	//	see the following for the PPU memory layout: https://wiki.nesdev.com/w/index.php/PPU_memory_map
-	if (addr < 0x2000) // CHR-ROM or CHR-RAM
+	if (addr <= 0x1FFF) // CHR-ROM or CHR-RAM
 		return this->cartridge->chr_access(addr, data, isWrite);
 	else if (addr <= 0x3EFF) { // Nametable memory
 		
@@ -514,7 +514,8 @@ void PPUClass::pixelDraw() {
 				if (spritePalette == 0) continue;
 
 				if (this->primaryOAM[i].id == 0 && palette && x != 0xFF)
-					this->registers.STAT |= STAT_BITMASKS::S_0_HIT;
+					SetRegisterBits(this->registers.STAT, STAT_BITMASKS::S_0_HIT);
+					
 				spritePalette |= (this->primaryOAM[i].data.attributes & 0x03) << 2;
 				objPalette = spritePalette + 16;
 				objPriority = this->primaryOAM[i].data.attributes & 0x20;
