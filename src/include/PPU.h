@@ -121,6 +121,13 @@ public:
 	PPUClass();
 	~PPUClass() {  }
 
+	// Shorthand notations used
+	// BG == Background
+	// AT == Attributes
+	// NT == Nametables
+	// L == Low (Low order byte)
+	// H == High (High order byte)
+
 	//	used to access PPU registers
 	void write(uint16_t addr, uint8_t& data);
 	uint8_t read(uint16_t addr);
@@ -168,8 +175,9 @@ protected:
 
 	//	used to determine what scanline we are currently on
 	int16_t scanline = -1;
-	int16_t scanlinePixel = 0;
+	int16_t scanlinePixel = 0; // The pixel within the scanline
 
+	// Nametable storage
 	std::vector<uint8_t> nametables;
 
 	//	the actual palette storage for the PPU
@@ -250,7 +258,7 @@ protected:
 	void horizontal_scroll();
 	void vertical_scroll();
 
-	// Updates
+	// Updates - Copies data from Loopy T to Loopy V
 	void horizontal_update() { if (!this->rendering()) return; this->vAddr.r = ((this->vAddr.r & ~0x041F) | (this->tAddr.r & 0x041F)); }
 	void vertical_update() { if (!this->rendering()) return; this->vAddr.r = ((this->vAddr.r & ~0x7BE0) | (this->tAddr.r & 0x7BE0)); }
 

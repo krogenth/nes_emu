@@ -326,7 +326,8 @@ void PPUClass::frame_scanline() {
 
 	}
 	else if (this->scanlinePixel == 321) {
-
+		// Get Nametable address in preparation for the next scanline
+		// For more info: https://wiki.nesdev.com/w/images/d/d1/Ntsc_timing.png
 		this->load_sprites();
 		address = this->addressNT();
 
