@@ -15,6 +15,8 @@ public:
 	uint8_t prg_write(uint16_t& address, const uint8_t& data) override;
 	uint8_t chr_write(uint16_t& address, const uint8_t& data) override;
 
+	mirrorEnum getMirror() { return mirroring; }
+
 protected:
 	uint8_t reg_Load = 0b00010000;
 	uint8_t reg_Control = 0x00;
@@ -39,6 +41,8 @@ protected:
 	uint8_t chr_value_1 = 0x00;
 	uint8_t chr_value_2 = 0x00;
 	uint8_t prg_value_1 = 0x00;
+
+	mirrorEnum mirroring;
 
 	void clearLoad() { this->reg_Load = 0b00010000; }
 	void loadControl();

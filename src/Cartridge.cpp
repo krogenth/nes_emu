@@ -56,10 +56,10 @@
 	else {
 
 		rom->prg_rom_chunks = (uint32_t)rom->header.prgRomSizeLSB;
-		rom->chr_rom_chunks = rom->header.chrRomSizeLSB ? (uint32_t)rom->header.chrRomSizeLSB : 1;
+		rom->chr_rom_chunks = (rom->header.chrRomSizeLSB ? rom->header.chrRomSizeLSB : (rom->header.flags8 ? rom->header.flags8 : 1));
 		rom->prg_ram_chunks = rom->header.flags8 ? rom->header.flags8 : 1;							//	there will always be minimum one 8KB chunk of PRG RAM
-		rom->prg_rom.resize(((size_t)rom->header.prgRomSizeLSB * 0x4000));							//	0x4000 == 16KB
-		rom->chr_rom.resize(((size_t)rom->header.chrRomSizeLSB * 0x2000));							//	0x2000 == 8KB
+		rom->prg_rom.resize((size_t)rom->prg_rom_chunks * 0x4000);									//	0x4000 == 16KB
+		rom->chr_rom.resize((size_t)rom->chr_rom_chunks * 0x2000);									//	0x2000 == 8KB
 		rom->prg_ram.resize((size_t)rom->prg_ram_chunks * 0x2000);
 		(rom->header.prgChrSizeMSB & 0x01) ? rom->tvType = tvEnum::PAL : rom->tvType = tvEnum::NTSC;
 
