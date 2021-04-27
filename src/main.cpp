@@ -17,6 +17,7 @@ int main(int argc, char* argv[]) {
 	ControllerClass controller;
 	CartridgeClass cartridge;
 	GUIClass gui(PROG_NAME);
+	
 
 	//	give CPU access to relevant components it needs to access
 	//	CPU needs to know about the cartridge, doesn't matter if a ROM is loaded or not
@@ -26,12 +27,15 @@ int main(int argc, char* argv[]) {
 
 	ppu.loadCartridge(&cartridge);
 	ppu.loadGUI(&gui);
-	ppu.loadCPU(&cpu);
+  
+  //  give controller gui access
+	controller.loadGUI(&gui);
 
 	//	give GUI access to relevant components it needs to access
 	gui.loadCPU(&cpu);
 	gui.loadPPU(&ppu);
 	gui.loadCartridge(&cartridge);
+	gui.loadController(&controller);
 
 	//	give the GUI the information it needs in order to create the windows for the various memory spaces
 	gui.addCPUViewer("CPU RAM", &CPUClass::get_cpu_ram, &CPUClass::get_cpu_ram_size);
