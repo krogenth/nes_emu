@@ -48,7 +48,10 @@ struct romStruct {
 enum mirrorEnum : uint8_t {
 
 	HORIZONTAL = 0,
-	VERTICAL = 1
+	VERTICAL = 1,
+	SINGLEA = 2,
+	SINGLEB = 3,
+	FOURSCREEN = 4
 
 };
 
