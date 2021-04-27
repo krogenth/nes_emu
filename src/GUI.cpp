@@ -291,21 +291,61 @@ void::GUIClass::drawControllerDialog() {
   
     ImGui::Begin("Controller Bindings", &showControllerDialog);  
     ImGui::Text("'A' is currently button: %d", this->controller->getButton(0));    
-    if (ImGui::Button("Rebind A")) { showButtonSet[0] = true; }
+    if (ImGui::Button("Rebind A")) {
+        for (int i = 0; i < 8; i++) {
+            showButtonSet[i] = false;
+        }
+        showButtonSet[0] = true;
+    }
     ImGui::Text("'B' is currently button: %d", this->controller->getButton(1));
-    if (ImGui::Button("Rebind B")) { showButtonSet[1] = true; }
+    if (ImGui::Button("Rebind B")) {
+        for (int i = 0; i < 8; i++) {
+            showButtonSet[i] = false;
+        }
+        showButtonSet[1] = true;
+    }
     ImGui::Text("'Select' is currently button: %d", this->controller->getButton(2));
-    if (ImGui::Button("Rebind Select")) { showButtonSet[2] = true; }
+    if (ImGui::Button("Rebind Select")) {
+        for (int i = 0; i < 8; i++) {
+            showButtonSet[i] = false;
+        }
+        showButtonSet[2] = true;
+    }
     ImGui::Text("'Start' is currently button: %d", this->controller->getButton(3));
-    if (ImGui::Button("Rebind Start")) { showButtonSet[3] = true; }
+    if (ImGui::Button("Rebind Start")) {
+        for (int i = 0; i < 8; i++) {
+            showButtonSet[i] = false;
+        }
+        showButtonSet[3] = true;
+    }
     ImGui::Text("'Up' is currently button: %d", this->controller->getButton(4));
-    if (ImGui::Button("Rebind Up")) { showButtonSet[4] = true; }
+    if (ImGui::Button("Rebind Up")) {
+        for (int i = 0; i < 8; i++) {
+            showButtonSet[i] = false;
+        }
+        showButtonSet[4] = true;
+    }
     ImGui::Text("'Down' is currently button: %d", this->controller->getButton(5));
-    if (ImGui::Button("Rebind Down")) { showButtonSet[5] = true; }
+    if (ImGui::Button("Rebind Down")) {
+        for (int i = 0; i < 8; i++) {
+            showButtonSet[i] = false;
+        }
+        showButtonSet[5] = true;
+    }
     ImGui::Text("'Left' is currently button: %d", this->controller->getButton(6));
-    if (ImGui::Button("Rebind Left")) { showButtonSet[6] = true; }
+    if (ImGui::Button("Rebind Left")) {
+        for (int i = 0; i < 8; i++) {
+            showButtonSet[i] = false;
+        }
+        showButtonSet[6] = true;
+    }
     ImGui::Text("'Right' is currently button: %d", this->controller->getButton(7));
-    if (ImGui::Button("Rebind Right")) { showButtonSet[7] = true; }
+    if (ImGui::Button("Rebind Right")) { 
+        for (int i = 0; i < 8; i++) {
+            showButtonSet[i] = false;
+        }
+        showButtonSet[7] = true; 
+    }
     if (ImGui::Button("Save To ini")) { this->controller->setIni(); }
             
     ImGui::End();          
