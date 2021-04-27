@@ -42,7 +42,7 @@ xxxM xPPP
 	else
 		this->mirroring = mirrorEnum::SINGLEB;
 
-	this->prg_rom_window_1 = data & 0x07;
+	return this->prg_rom_window_1 = data & 0x07;
 
 }
 

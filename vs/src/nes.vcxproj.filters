@@ -75,6 +75,9 @@
     <ClCompile Include="..\..\src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\mappers\Mapper007.cpp">
+      <Filter>Mappers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\include\custom_exceptions.h">
@@ -113,7 +116,7 @@
     <ClInclude Include="..\..\src\include\PPU.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\include\mappers\mapper002.h">
+    <ClInclude Include="..\..\src\include\mappers\Mapper002.h">
       <Filter>Mappers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\include\mappers\Mapper003.h">
@@ -151,6 +154,9 @@
     </ClInclude>
     <ClInclude Include="..\..\libs\imgui-sfml\imgui-SFML_export.h">
       <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\include\mappers\Mapper007.h">
+      <Filter>Mappers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -27,6 +27,7 @@ int main(int argc, char* argv[]) {
 
 	ppu.loadCartridge(&cartridge);
 	ppu.loadGUI(&gui);
+	ppu.loadCPU(&cpu);
   
 	//  give controller gui access
 	controller.loadGUI(&gui);
