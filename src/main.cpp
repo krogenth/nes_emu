@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
 	ppu.loadCartridge(&cartridge);
 	ppu.loadGUI(&gui);
   
-  //  give controller gui access
+	//  give controller gui access
 	controller.loadGUI(&gui);
 
 	//	give GUI access to relevant components it needs to access

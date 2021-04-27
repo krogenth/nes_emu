@@ -14,8 +14,17 @@ int main() {
 
 	std::cout << "The current directory is: " << directory << '\n';
 	std::cout << "nesMagic String: " << nesMagic << '\n';
-	CartridgeClass cartridge;
 
+	if (!std::filesystem::exists(directory + "\\roms")) {
+
+		std::cout << "Failed to locate " << directory << "\\roms please make sure the directory exists and roms are located there to test.\n" << std::flush;
+		std::cout << "Press enter to continue...\n" << std::flush;
+		std::cin.get();
+		return EXIT_SUCCESS;
+
+	}
+
+	CartridgeClass cartridge;
 	romStruct* rom = nullptr;
 
 	//	for-each loop through all files within directory\\roms
@@ -92,6 +101,7 @@ int main() {
 
 	}
 
+	std::cout << "Press enter to continue...\n" << std::flush;
 	std::cin.get();
 
 	return EXIT_SUCCESS;
