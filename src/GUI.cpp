@@ -22,7 +22,7 @@
 GUIClass::GUIClass(std::string progName) {
 
     //  initialize SFML window context to a default state
-    this->window.create(sf::VideoMode(1280, 720), progName);
+    this->window.create(sf::VideoMode(256, 240), progName);
     this->window.setFramerateLimit(60);
 
     this->gameTexture.create(1280, 720);
