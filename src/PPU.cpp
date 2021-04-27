@@ -546,6 +546,9 @@ uint16_t PPUClass::addressMirrorAdjust(uint16_t addr) {
 
 	case mirrorEnum::HORIZONTAL: return ((addr / 2) & 0x0400) + (addr % 0x0400);
 	case mirrorEnum::VERTICAL: return addr % 0x0800;
+	case mirrorEnum::SINGLEA: return addr % 0x0400;
+	case mirrorEnum::SINGLEB: return (addr % 0x0400) + 0x0400;
+	case mirrorEnum::FOURSCREEN: return addr;
 	default: return addr - 0x2000;
 
 	}
