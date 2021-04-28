@@ -140,9 +140,6 @@ void GUIClass::draw() {
     if (showButtonSet[7])
         this->drawSetButtons(7);
 
-    if (showFocusInput)
-        this->drawFocusInput();
-
     this->window.clear();
     this->window.draw(sprite);
     ImGui::SFML::Render(this->window);
@@ -185,8 +182,9 @@ uint8_t GUIClass::getControllerState() {
         temp |= (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) << 6;    //  left pressed
         temp |= (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) << 7;    //  right pressed
 
-        return temp;
+        
     }
+    return temp;
 
 }
 
@@ -290,13 +288,19 @@ void GUIClass::drawMenu() {
 
     }
     if (ImGui::BeginMenu("Settings")) {
-        if (ImGui::MenuItem("Set Controller Binds" ) && sf::Joystick::isConnected(0)) {
-            showControllerDialog = true;
+            if (ImGui::MenuItem("Set Controller Binds") && sf::Joystick::isConnected(0)) {
+                showControllerDialog = true;
 
-        }  
-
-        if (ImGui::MenuItem("Background Input")) {
-            showFocusInput = true;
+            }
+            if(this->backgroundInput){
+            if (ImGui::MenuItem("Disable Background Input")) {
+                this->backgroundInput = !this->backgroundInput;
+            }
+        }
+        else {
+                if (ImGui::MenuItem("Enable Background Input")) {
+                    this->backgroundInput = !this->backgroundInput;
+                }
         }
 
         ImGui::EndMenu();
@@ -474,12 +478,6 @@ void::GUIClass::drawSetButtons(int b) {
         break;
     }
 
-}
-
-void::GUIClass::drawFocusInput() {
-    ImGui::Begin("Background Inputs",&showFocusInput);
-    ImGui::Checkbox("Allow Background Input",&backgroundInput);
-    ImGui::End();
 }
 
 void GUIClass::drawSelectDebug() {

@@ -22,7 +22,6 @@ struct MemoryEditor;
 static bool showSelectDebug = false;
 static bool showFileDialog = false;
 static bool showControllerDialog = false;
-static bool showFocusInput = false;
 static bool showButtonSet[]{ false, false, false, false, false, false, false, false};
 
 
@@ -128,7 +127,6 @@ private:
 	void drawFileDialog();
 	void drawControllerDialog();
 	void drawSetButtons(int b);
-	void drawFocusInput();
 
 	
 
