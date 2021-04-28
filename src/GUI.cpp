@@ -112,24 +112,37 @@ void GUIClass::draw() {
 
     if (showFileDialog)
         this->drawFileDialog();
+
     if (showControllerDialog)
         this->drawControllerDialog();
+
     if (showButtonSet[0])
         this->drawSetButtons(0);
+
     if (showButtonSet[1])
         this->drawSetButtons(1);
+
     if (showButtonSet[2])
         this->drawSetButtons(2);
+
     if (showButtonSet[3])
         this->drawSetButtons(3);
+
     if (showButtonSet[4])
         this->drawSetButtons(4);
+
     if (showButtonSet[5])
         this->drawSetButtons(5);
+
     if (showButtonSet[6])
         this->drawSetButtons(6);
+
     if (showButtonSet[7])
         this->drawSetButtons(7);
+
+    if (showFocusInput)
+        this->drawFocusInput();
+
     this->window.clear();
     this->window.draw(sprite);
     ImGui::SFML::Render(this->window);
@@ -143,25 +156,26 @@ uint8_t GUIClass::getControllerState() {
 
     uint8_t temp = 0;
     sf::Joystick::update();
-    if (sf::Joystick::isConnected(0)) {
-         temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(0))) << 0;    //  A pressed
-         temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(1))) << 1;    //  B pressed
-         temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(2))) << 2;    //  select pressed
-         temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(3))) << 3;    //  start pressed
-         temp |= (sf::Joystick::getAxisPosition(0,sf::Joystick::Axis::PovY) > dead_zone) << 4;    //  up pressed dpad
-         temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::Y) < -dead_zone) << 4;  //  up pressed left stick
-         temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(4))) << 4;   //up custom
-         temp |= (sf::Joystick::getAxisPosition(0,sf::Joystick::Axis::PovY) < -dead_zone) << 5;   //  down pressed dpad
-         temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::Y) > dead_zone) << 5;   //  down pressed left stick
-         temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(5))) << 5;
-         temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovX) < -dead_zone) << 6;  //  left pressed dpad
-         temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X) < -dead_zone) << 6;     //  left pressed left stick
-         temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(6))) << 6;
-         temp |= (sf::Joystick::getAxisPosition(0,sf::Joystick::Axis::PovX) > dead_zone) << 7;    //  right pressed dpad
-         temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X) > dead_zone) << 7;      //  right pressed left stick
-         temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(7))) << 7;
-    }
-    
+    if (this->window.hasFocus() || backgroundInput) {
+        if (sf::Joystick::isConnected(0)) {
+            temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(0))) << 0;    //  A pressed
+            temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(1))) << 1;    //  B pressed
+            temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(2))) << 2;    //  select pressed
+            temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(3))) << 3;    //  start pressed
+            temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovY) > dead_zone) << 4;    //  up pressed dpad
+            temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::Y) < -dead_zone) << 4;  //  up pressed left stick
+            temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(4))) << 4;   //up custom
+            temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovY) < -dead_zone) << 5;   //  down pressed dpad
+            temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::Y) > dead_zone) << 5;   //  down pressed left stick
+            temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(5))) << 5;
+            temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovX) < -dead_zone) << 6;  //  left pressed dpad
+            temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X) < -dead_zone) << 6;     //  left pressed left stick
+            temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(6))) << 6;
+            temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovX) > dead_zone) << 7;    //  right pressed dpad
+            temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X) > dead_zone) << 7;      //  right pressed left stick
+            temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(7))) << 7;
+        }
+
         temp |= (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) << 0;    //  A pressed
         temp |= (sf::Keyboard::isKeyPressed(sf::Keyboard::F)) << 1;    //  B pressed
         temp |= (sf::Keyboard::isKeyPressed(sf::Keyboard::T)) << 2;    //  select pressed
@@ -170,8 +184,9 @@ uint8_t GUIClass::getControllerState() {
         temp |= (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) << 5;    //  down pressed
         temp |= (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) << 6;    //  left pressed
         temp |= (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) << 7;    //  right pressed
-    
-    return temp;
+
+        return temp;
+    }
 
 }
 
@@ -280,12 +295,17 @@ void GUIClass::drawMenu() {
 
         }  
 
+        if (ImGui::MenuItem("Background Input")) {
+            showFocusInput = true;
+        }
+
         ImGui::EndMenu();
     }
 
     ImGui::EndMainMenuBar();
 
 }
+
 
 void::GUIClass::drawControllerDialog() {
   
@@ -454,6 +474,12 @@ void::GUIClass::drawSetButtons(int b) {
         break;
     }
 
+}
+
+void::GUIClass::drawFocusInput() {
+    ImGui::Begin("Background Inputs",&showFocusInput);
+    ImGui::Checkbox("Allow Background Input",&backgroundInput);
+    ImGui::End();
 }
 
 void GUIClass::drawSelectDebug() {
