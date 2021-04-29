@@ -1,6 +1,6 @@
 #include "..\include\mappers\Mapper000.h"
 
-//Crafted the mapper00 along slide Dan
+//Crafted the mapper00 along slide Dan. 
 //	for details on the mapper000 layout: https://wiki.nesdev.com/w/index.php/NROM
 //	for rom listing of mapper000 roms: http://bootgod.dyndns.org:7777/search.php?ines=00
 
