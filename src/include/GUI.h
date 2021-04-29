@@ -97,6 +97,7 @@ private:
 	bool isRendering = true;
 	bool isPaused = false;
 	bool showDebug = false;
+	bool backgroundInput = false;
 
 	uint32_t delay = 0;
 
