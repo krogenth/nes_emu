@@ -13,6 +13,7 @@
 /vs/.vs
 /vs/x64/
 /vs/src/x64/
+/vs/src/saves/
 /vs/tests/Cartridge_test/x64/
 /vs/tests/CPU_test/x64
 /vs/tests/Mapper_test/x64
