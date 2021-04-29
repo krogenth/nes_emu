@@ -22,7 +22,8 @@ struct MemoryEditor;
 static bool showSelectDebug = false;
 static bool showFileDialog = false;
 static bool showControllerDialog = false;
-static bool showButtonSet[]{ false, false, false, false};
+static bool showButtonSet[]{ false, false, false, false, false, false, false, false};
+
 
 //	structs to contain everything needed to create the windows for the hex viewers
 //	split up based on component, because of the requirement for function pointers
@@ -96,6 +97,7 @@ private:
 	bool isRendering = true;
 	bool isPaused = false;
 	bool showDebug = false;
+	bool backgroundInput = false;
 
 	uint32_t delay = 0;
 
