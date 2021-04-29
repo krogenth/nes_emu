@@ -5,6 +5,10 @@
 #include ".\mappers\Mapper000.h"
 #include ".\mappers\Mapper001.h"
 #include ".\mappers\Mapper002.h"
+#include ".\mappers\Mapper003.h"
+
+
+#include ".\mappers\Mapper007.h"
 
 #include ".\custom_exceptions.h"
 

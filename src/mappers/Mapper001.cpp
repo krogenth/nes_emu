@@ -13,6 +13,8 @@ Mapper001::Mapper001(romStruct* _rom) : MapperClass(_rom) {
 	this->chr_rom_window_1 = 0x00;
 	this->chr_rom_window_2 = 0x00;
 
+	this->mirroring = (this->rom->header.flags6 & 0x01) ? mirrorEnum::VERTICAL : mirrorEnum::HORIZONTAL;
+
 }
 
 [[nodiscard]] uint8_t Mapper001::prg_read(uint16_t& address) {
@@ -42,7 +44,7 @@ Mapper001::Mapper001(romStruct* _rom) : MapperClass(_rom) {
 		return this->rom->chr_rom.at((size_t)address + ((size_t)this->chr_rom_window_1 * 0x1000));
 	else
 		//	we need to reduce the address by 4096(0x1000) so that it is within the 4KB window space
-		return this->rom->chr_rom.at((size_t)address - 0x1000 + ((size_t)this->chr_rom_window_2 * 0x1000));
+		return this->rom->chr_rom.at(((size_t)address - 0x1000) + ((size_t)this->chr_rom_window_2 * 0x1000));
 
 }
 
@@ -52,7 +54,7 @@ uint8_t Mapper001::prg_write(uint16_t& address, const uint8_t& data) {
 		//	PRG RAM section, we can write there
 		return this->rom->prg_ram.at(((size_t)address - 0x6000) + ((size_t)this->prg_ram_window * 0x2000)) = data;
 
-	if (data & 0x80) {	//	check if the highest bit of the daata was set, if so, reset the reg_Load
+	if (data & 0x80) {	//	check if the highest bit of the data was set, if so, reset the reg_Load
 
 		this->clearLoad();
 		this->reg_Control |= 0x0C;
@@ -104,7 +106,7 @@ uint8_t Mapper001::chr_write(uint16_t& address, const uint8_t& data) {
 		return this->rom->chr_rom.at((size_t)address + ((size_t)this->chr_rom_window_1 * 0x1000)) = data;
 	else
 		//	we need to reduce the address by 4096(0x1000) so that it is within the 4KB window space
-		return this->rom->chr_rom.at((size_t)address - 0x1000 + ((size_t)this->chr_rom_window_2 * 0x1000)) = data;
+		return this->rom->chr_rom.at(((size_t)address - 0x1000) + ((size_t)this->chr_rom_window_2 * 0x1000)) = data;
 
 }
 
@@ -123,8 +125,15 @@ CPPMM
 +----- CHR ROM bank mode (0: switch 8 KB at a time; 1: switch two separate 4 KB banks)
 */
 
-	this->prg_window_mode = (this->reg_Control & 0x0C) >> 2;
-	this->chr_window_mode = (this->reg_Control & 0x10) >> 4;
+	this->prg_window_mode = (this->reg_Control & 0b00001100) >> 2;
+	this->chr_window_mode = (this->reg_Control & 0b00010000) >> 4;
+
+	switch (this->reg_Control & 0x03) {
+
+	case 2: this->mirroring = mirrorEnum::VERTICAL; break;
+	case 3: this->mirroring = mirrorEnum::HORIZONTAL; break;
+
+	}
 
 	//	we need to update our windows after this
 	this->updateWindows();
@@ -144,16 +153,16 @@ void Mapper001::updateWindows() {
 	}
 	else if (this->prg_window_mode == 0x02) {
 
-		//	weare using 2 16KB windows, with the first fixed to the first bank
+		//	we are using 2 16KB windows, with the first fixed to the first bank
 		this->prg_rom_window_1 = 0x00;	//	we use a fixed location
 		this->prg_rom_window_2 = this->prg_value_1 & 0x0F;
 
 	}
-	else if (this->prg_window_mode == 0x03) {
+	else {
 
-		//	weare using 2 16KB windows, with the second fixed to the last bank
-		this->prg_rom_window_1 = this->prg_value_1 & 0x0F;	//	we use a fixed location
-		this->prg_rom_window_2 = this->rom->prg_rom_chunks - 1;
+		//	we are using 2 16KB windows, with the second fixed to the last bank
+		this->prg_rom_window_1 = this->prg_value_1 & 0x0F;
+		this->prg_rom_window_2 = this->rom->prg_rom_chunks - 1;	//	we use a fixed location
 
 	}
 

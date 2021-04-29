@@ -1,0 +1,22 @@
+# specify version formating, auto-incremented by appveyor
+version: 'build-{build}-{branch}'
+
+# scripts to be run after appveyor clones the repo
+install:
+  - git submodule update --init --recursive
+
+platform:
+  - x64
+
+configuration:
+  - Debug
+  - Release
+
+build_script:
+  - cd .\libs\sfml
+  - mkdir build
+  - cd .\build
+  - cmake -G "Visual Studio 16 2019" ..\
+  - MSBuild .\SFML.sln
+  - cd ..\..\..
+  - MSBuild .\vs\nes.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"

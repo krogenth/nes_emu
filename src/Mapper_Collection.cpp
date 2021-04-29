@@ -16,6 +16,12 @@ MapperClass* selectMapper(romStruct* _rom) {
 	case 2:
 		mapper = new Mapper002(_rom);
 		break;
+	case 3:
+		mapper = new Mapper003(_rom);
+		break;
+	case 7:
+		mapper = new Mapper007(_rom);
+		break;
 	default:
 		delete _rom;	//	rom is useless, just delete it
 		throw MapperException("MapperID " + std::to_string(mapperID) + " not supported");

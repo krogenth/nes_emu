@@ -27,10 +27,10 @@ Mapper002::Mapper002(romStruct* _rom) : MapperClass(_rom) {
 [[nodiscard]] uint8_t Mapper002::chr_read(uint16_t& address) {
 
 	//	safety check for CPU testing ROMs
-	if (this->rom->chr_rom.size() == 0)
-		return 0;
+	//if (this->rom->chr_rom.size() == 0)
+		//return this->rom->chr_ram.at((size_t)address);
 
-	return this->rom->chr_rom.at((size_t)address & 0x1FFF);
+	return this->rom->chr_rom.at((size_t)address);
 
 }
 
@@ -40,16 +40,19 @@ uint8_t Mapper002::prg_write(uint16_t& address, const uint8_t& data) {
 		throw new MapperException("Mapper does not support PRG RAM");
 
 	//	this follows the UNROM specification, which uses only the first 3 bits to select the PRG ROM section to window
-	return this->prg_rom_window_1 = data & 0x07;
+	if(address & 0x8000)
+		this->prg_rom_window_1 = data & 0x0F;
+
+	return data;
 
 }
 
 uint8_t Mapper002::chr_write(uint16_t& address, const uint8_t& data) {
 
 	//	safety check for CPU testing ROMs
-	if (this->rom->chr_rom.size() == 0)
-		return 0;
+	//if (this->rom->chr_rom.size() == 0)
+		//return this->rom->chr_ram.at((size_t)address) = data;
 
-	return this->rom->chr_rom.at((size_t)address & 0x1FFF) = data;
+ 	return this->rom->chr_rom.at((size_t)address) = data;
 
 }
