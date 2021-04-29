@@ -1,4 +1,5 @@
 #include <fstream>	//	std::ifstream
+#include <filesystem>
 
 #include ".\include\Cartridge.h"
 #include ".\include\Mapper_Collection.h"
@@ -81,6 +82,18 @@
 	*/
 
 	input.close();
+
+	//	check if a save file exists
+	if (!std::filesystem::exists(".\\saves"))
+		std::filesystem::create_directory(".\\saves");
+	this->saveFile = ".\\saves\\" + filename.substr(filename.rfind("\\") + 1, filename.find(".nes") - (filename.rfind("\\") + 1)) + ".prgram";
+	if (std::filesystem::exists(this->saveFile)) {
+
+		input.open(this->saveFile, std::ios::in | std::ios::binary);
+		input.read((char*)rom->prg_ram.data(), rom->prg_ram.size());
+		input.close();
+
+	}
 
 	return rom;
 

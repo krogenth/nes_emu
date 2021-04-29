@@ -1,4 +1,5 @@
 #include <tuple>
+#include <fstream>
 
 #include ".\include\GUI.h"
 
@@ -24,17 +25,20 @@
 
 GUIClass::GUIClass(std::string progName) {
 
+    this->progName = progName;
+
     //  initialize SFML window context to a default state
-    this->window.create(sf::VideoMode(256, 240), progName);
+    this->window.create(sf::VideoMode(256, 240), this->progName);
     this->window.setFramerateLimit(60);
 
     this->gameTexture.create(1280, 720);
+    this->window.setSize(sf::Vector2u(768, 720));
 
     ImGui::SFML::Init(this->window);
 
     //  initialize filebrowser for title and file type lookup
     this->filebrowser.SetTitle("Choose File");
-    this->filebrowser.SetTypeFilters({ ".nes", ".*" });
+    this->filebrowser.SetTypeFilters({ ".nes" });
 
 }
 
@@ -89,12 +93,19 @@ void GUIClass::draw() {
 
         ImGui::SFML::ProcessEvent(e);
 
-        if (e.type == sf::Event::Closed)
+        if (e.type == sf::Event::Closed) {
+
+            this->saveGame();
             this->isRendering = false;
+
+        }
 
     }
 
+    //sf::Vector2u windowSize = this->window.getSize();
     sf::Sprite sprite(this->gameTexture);
+    //sprite.setScale((float)windowSize.x / sprite.getGlobalBounds().width, (float)windowSize.y / sprite.getGlobalBounds().height);
+
 
     ImGui::SFML::Update(this->window, clock.restart());
 
@@ -136,18 +147,18 @@ uint8_t GUIClass::getControllerState() {
     uint8_t temp = 0;
     sf::Joystick::update();
     if (sf::Joystick::isConnected(0)) {
-         temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(0))) << 0;    //  A pressed
-         temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(1))) << 1;    //  B pressed
-         temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(2))) << 2;    //  select pressed
-         temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(3))) << 3;    //  start pressed
-         temp |= (sf::Joystick::getAxisPosition(0,sf::Joystick::Axis::PovY) > dead_zone) << 4;    //  up pressed dpad
-         temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::Y) < -dead_zone) << 4;     //  up pressed left stick
-         temp |= (sf::Joystick::getAxisPosition(0,sf::Joystick::Axis::PovY) < -dead_zone) << 5;   //  down pressed dpad
-         temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::Y) > dead_zone) << 5;   //  down pressed left stick
-         temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovX) < -dead_zone) << 6;  //  left pressed dpad
-         temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X) < -dead_zone) << 6;     //  left pressed left stick
-         temp |= (sf::Joystick::getAxisPosition(0,sf::Joystick::Axis::PovX) > dead_zone) << 7;    //  right pressed dpad
-         temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X) > dead_zone) << 7;      //  right pressed left stick
+        temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(0))) << 0;    //  A pressed
+        temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(1))) << 1;    //  B pressed
+        temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(2))) << 2;    //  select pressed
+        temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(3))) << 3;    //  start pressed
+        temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovY) > dead_zone) << 4;    //  up pressed dpad
+        temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::Y) < -dead_zone) << 4;     //  up pressed left stick
+        temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovY) < -dead_zone) << 5;   //  down pressed dpad
+        temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::Y) > dead_zone) << 5;   //  down pressed left stick
+        temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovX) < -dead_zone) << 6;  //  left pressed dpad
+        temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X) < -dead_zone) << 6;     //  left pressed left stick
+        temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovX) > dead_zone) << 7;    //  right pressed dpad
+        temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X) > dead_zone) << 7;      //  right pressed left stick
     }
     else {
         temp |= (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) << 0;    //  A pressed
@@ -204,6 +215,7 @@ void GUIClass::drawMenu() {
 
             if (ImGui::MenuItem("Unload ROM")) {
 
+                this->saveGame();
                 this->cartridge->unload();
                 this->loadedFile = "";
 
@@ -231,10 +243,22 @@ void GUIClass::drawMenu() {
                 this->isPaused = !this->isPaused;
 
         }
+
+        if (ImGui::MenuItem("Reset")) {
+
+            this->saveGame();
+            this->CPU->reset();
+            this->PPU->reset();
+
+        }
        
         //  moved to sub-menu item so if user drops one menu and drags into previous Quit menu button, it does not auto-quit
-        if (ImGui::MenuItem("Quit"))
+        if (ImGui::MenuItem("Quit")) {
+
+            this->saveGame();
             this->isRendering = false;
+
+        }
 
         ImGui::EndMenu();
     }
@@ -406,6 +430,9 @@ void GUIClass::drawFileDialog() {
 
         if (loadedFile.find(".nes") != std::string::npos && ((loadedFile.find_last_of(".") - loadedFile.find_last_of("\\")) > 1)) {
 
+            //  save current game first
+            this->saveGame();
+
             //  grab the file path name and load the new ROM in
             this->cartridge->storeMapper(selectMapper(this->cartridge->load(this->loadedFile)));
 
@@ -425,7 +452,15 @@ void GUIClass::drawFileDialog() {
                 this->PPU->reset();
                 uint32_t x, y;
                 std::tie(x, y) = this->PPU->getResolution();
-                this->gameTexture.create(x, y);
+                if (this->gameTexture.getSize().y != y) {
+
+                    this->window.close();
+                    this->window.create(sf::VideoMode(x, y), this->progName);
+                    this->window.setSize(sf::Vector2u(x * 3, y * 3));
+                    this->window.setFramerateLimit(this->PPU->getTVFrameRate());
+                    this->gameTexture.create(x, y);
+
+                }
 
             }
 
@@ -436,5 +471,14 @@ void GUIClass::drawFileDialog() {
         showFileDialog = false;
 
     }
+
+}
+
+void GUIClass::saveGame() {
+
+    std::string saveFile = this->cartridge->getSaveFile();
+    std::ofstream output(saveFile, std::ios::out | std::ios::binary);
+
+    output.write((char*)this->cartridge->get_prg_ram(), this->cartridge->get_prg_ram_size());
 
 }
