@@ -23,7 +23,7 @@
 
 		input.close();
 		delete rom;
-		throw CartridgeException("Cartridge not NES format. HeaderID: " + std::to_string(rom->header.ID));	
+		throw CartridgeException("Cartridge not NES format. HeaderID: " + std::string(rom->header.ID));	
 
 	}
 

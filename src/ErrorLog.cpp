@@ -1,5 +1,5 @@
 // Implementation for Error Logging in the NES EMU
-#include "ErrorLog.h"
+#include ".\include\ErrorLog.h"
 
 
 ErrorLogClass::ErrorLogClass()

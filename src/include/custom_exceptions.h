@@ -2,7 +2,7 @@
 #define EXCEPTIONS_H
 
 #include <stdexcept>	//	std::runtime_error
-#include ".\include\ErrorLog.h"
+#include "ErrorLog.h"
 
 class CartridgeException : public std::runtime_error {
 
