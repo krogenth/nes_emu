@@ -93,8 +93,11 @@ void GUIClass::draw() {
 
         ImGui::SFML::ProcessEvent(e);
 
-        if (e.type == sf::Event::Closed)
+        if (e.type == sf::Event::Closed) {
+
+            this->saveGame();
             this->isRendering = false;
+        }
 
     }
 
@@ -398,7 +401,7 @@ void::GUIClass::drawSetButtons(int b) {
     case 0:
         ImGui::Begin("A Binding", &showButtonSet[0]);
         ImGui::Text("'A' is currently button: %d", this->controller->getButton(0));
-        ImGui::Text("Press new 'A' buton...");
+        ImGui::Text("Press new 'A' button...");
         for (int i = 0; i < sf::Joystick::getButtonCount(0); i++) {
             if (sf::Joystick::isButtonPressed(0, i)) {
                 this->controller->setButton(0, i);
@@ -410,7 +413,7 @@ void::GUIClass::drawSetButtons(int b) {
     case 1:
         ImGui::Begin("B Binding", &showButtonSet[1]);
         ImGui::Text("'B' is currently button: %d", this->controller->getButton(1));
-        ImGui::Text("Press new 'B' buton...");
+        ImGui::Text("Press new 'B' button...");
         for (int i = 0; i < sf::Joystick::getButtonCount(0); i++) {
             if (sf::Joystick::isButtonPressed(0, i)) {
                 this->controller->setButton(1, i);
@@ -422,7 +425,7 @@ void::GUIClass::drawSetButtons(int b) {
     case 2:
         ImGui::Begin("Select Binding", &showButtonSet[2]);
         ImGui::Text("'Select' is currently button: %d", this->controller->getButton(2));
-        ImGui::Text("Press new 'Select' buton...");
+        ImGui::Text("Press new 'Select' button...");
         for (int i = 0; i < sf::Joystick::getButtonCount(0); i++) {
             if (sf::Joystick::isButtonPressed(0, i)) {
                 this->controller->setButton(2, i);
@@ -434,7 +437,7 @@ void::GUIClass::drawSetButtons(int b) {
     case 3:
         ImGui::Begin("Start Binding", &showButtonSet[3]);
         ImGui::Text("'Start' is currently button: %d", this->controller->getButton(3));
-        ImGui::Text("Press new 'Start' buton...");
+        ImGui::Text("Press new 'Start' button...");
         for (int i = 0; i < sf::Joystick::getButtonCount(0); i++) {
             if (sf::Joystick::isButtonPressed(0, i)) {
                 this->controller->setButton(3, i);
@@ -446,7 +449,7 @@ void::GUIClass::drawSetButtons(int b) {
     case 4:
         ImGui::Begin("Up Binding", &showButtonSet[4]);
         ImGui::Text("'Up' is currently button: %d", this->controller->getButton(4));
-        ImGui::Text("Press new 'Up' buton...");
+        ImGui::Text("Press new 'Up' button...");
         for (int i = 0; i < sf::Joystick::getButtonCount(0); i++) {
             if (sf::Joystick::isButtonPressed(0, i)) {
                 this->controller->setButton(4, i);
