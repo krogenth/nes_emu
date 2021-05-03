@@ -443,8 +443,12 @@ void GUIClass::drawFileDialog() {
                 // Unsupported Mapper - show error window
                 showMapperError = true;
 
-                //  store just the file name itself - to be used in error message.
+                // Log the error with full filepath
+                errorLog.Write("Unsupported Mapper. Cannot load file: " + this->loadedFile);
+
+                //  store just the file name itself - to be used in error message
                 this->loadedFile = loadedFile.substr(loadedFile.find_last_of("\\") + 1);
+
             }
 
         }

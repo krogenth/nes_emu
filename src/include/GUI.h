@@ -14,6 +14,7 @@
 #include ".\CPU.h"
 #include ".\PPU.h"
 #include ".\Cartridge.h"
+#include ".\ErrorLog.h"
 
 #include ".\imfilebrowser.h"
 
@@ -118,6 +119,9 @@ private:
 	PPUClass* PPU = nullptr;
 	CartridgeClass* cartridge = nullptr;
 	ControllerClass* controller = nullptr;
+
+	// Error Logging
+	ErrorLogClass errorLog = ErrorLogClass();
 
 	//	used to draw the menubar of the main window, called by draw
 	void drawMenu();
