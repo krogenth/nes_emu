@@ -110,6 +110,9 @@ void GUIClass::draw() {
     if (this->showDebug)
         this->drawDebug();
 
+    if (showMapperError)
+        this->drawErrorWindow();
+
     if (showFileDialog)
         this->drawFileDialog();
     if (showControllerDialog)
@@ -407,26 +410,41 @@ void GUIClass::drawFileDialog() {
         if (loadedFile.find(".nes") != std::string::npos && ((loadedFile.find_last_of(".") - loadedFile.find_last_of("\\")) > 1)) {
 
             //  grab the file path name and load the new ROM in
-            this->cartridge->storeMapper(selectMapper(this->cartridge->load(this->loadedFile)));
+            try {
+                this->cartridge->storeMapper(selectMapper(this->cartridge->load(this->loadedFile)));
 
-            //  store just the file name itself
-            this->loadedFile = loadedFile.substr(loadedFile.find_last_of("\\") + 1);
+                //  store just the file name itself
+                this->loadedFile = loadedFile.substr(loadedFile.find_last_of("\\") + 1);
 
-            //  reset the CPU to a known state to start the new ROM
-            //  emulation requires the cartridge ROM be loaded before the CPU can be started/restarted
-            //  because the CPU must read a specific section of the ROM(0xFFFC and 0xFFFD) to find where to begin execution
-            this->CPU->reset();
+                //  reset the CPU to a known state to start the new ROM
+                //  emulation requires the cartridge ROM be loaded before the CPU can be started/restarted
+                //  because the CPU must read a specific section of the ROM(0xFFFC and 0xFFFD) to find where to begin execution
+                this->CPU->reset();
 
-            //  we would need to reset all components here that require it(APU and PPU specifically)
+                //  we would need to reset all components here that require it(APU and PPU specifically)
 
-            //  check if we have the PPU loaded, if not, we can ignore this
-            if (this->PPU) {
+                //  check if we have the PPU loaded, if not, we can ignore this
+                if (this->PPU) {
 
-                this->PPU->reset();
-                uint32_t x, y;
-                std::tie(x, y) = this->PPU->getResolution();
-                this->gameTexture.create(x, y);
+                    this->PPU->reset();
+                    uint32_t x, y;
+                    std::tie(x, y) = this->PPU->getResolution();
+                    this->gameTexture.create(x, y);
 
+                }
+                // We've succesfully loaded a ROM, disable error window if user hasn't closed it
+                showMapperError = false;
+
+            }
+           
+            
+            catch (MapperException e)
+            {
+                // Unsupported Mapper - show error window
+                showMapperError = true;
+
+                //  store just the file name itself - to be used in error message.
+                this->loadedFile = loadedFile.substr(loadedFile.find_last_of("\\") + 1);
             }
 
         }
@@ -437,4 +455,14 @@ void GUIClass::drawFileDialog() {
 
     }
 
+}
+
+void GUIClass::drawErrorWindow() {
+
+    // Error caused by trying to load a ROM that uses an unsupported mapper
+    ImGui::Begin("Unsupported Mapper Error", &showMapperError);
+    ImGui::Text("Cannot load file: %s", this->loadedFile.c_str());
+    ImGui::Text("File uses an unsupported Mapper.");
+    ImGui::Text("Please load a different ROM.");
+    ImGui::End();
 }

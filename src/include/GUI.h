@@ -23,6 +23,7 @@ static bool showSelectDebug = false;
 static bool showFileDialog = false;
 static bool showControllerDialog = false;
 static bool showButtonSet[]{ false, false, false, false};
+static bool showMapperError = false;
 
 //	structs to contain everything needed to create the windows for the hex viewers
 //	split up based on component, because of the requirement for function pointers
@@ -125,6 +126,7 @@ private:
 	void drawFileDialog();
 	void drawControllerDialog();
 	void drawSetButtons(int b);
+	void drawErrorWindow();
 
 	
 
