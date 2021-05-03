@@ -120,8 +120,6 @@ private:
 	CartridgeClass* cartridge = nullptr;
 	ControllerClass* controller = nullptr;
 
-	// Error Logging
-	ErrorLogClass errorLog = ErrorLogClass();
 
 	//	used to draw the menubar of the main window, called by draw
 	void drawMenu();

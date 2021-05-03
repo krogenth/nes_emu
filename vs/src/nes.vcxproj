@@ -168,6 +168,7 @@
     <ClCompile Include="..\..\src\Cartridge.cpp" />
     <ClCompile Include="..\..\src\Controller.cpp" />
     <ClCompile Include="..\..\src\CPU.cpp" />
+    <ClCompile Include="..\..\src\custom_exceptions.cpp" />
     <ClCompile Include="..\..\src\ErrorLog.cpp" />
     <ClCompile Include="..\..\src\GUI.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />

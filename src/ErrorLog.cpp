@@ -27,6 +27,11 @@ void ErrorLogClass::Write(std::string message)
 	logFile.close();
 }
 
+std::string ErrorLogClass::GetLogFile()
+{
+	return logFileName;
+}
+
 void ErrorLogClass::SetLogFile(std::string fileName)
 {
 	logFileName = fileName;
@@ -34,7 +39,6 @@ void ErrorLogClass::SetLogFile(std::string fileName)
 
 bool ErrorLogClass::LogExists(std::string fileName)
 {
-	// Not currently used. Maybe make a public function to check if a given filename already exists?
 	bool exists = false;
 	std::ifstream file(fileName);
 

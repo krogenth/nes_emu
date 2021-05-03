@@ -13,17 +13,18 @@ class ErrorLogClass {
 
 public:
 	ErrorLogClass();
-	ErrorLogClass(std::string fileName); // will write to the given file rather than the default
+	ErrorLogClass(std::string fileName);	// will write to the given file rather than the default
 	~ErrorLogClass();
 
-	void Write(std::string message); // Writes the given error message to the error log file
+	void Write(std::string message);		// Writes the given error message to the error log file
+	std::string GetLogFile();				//	Returns the name of the logfile
 	void SetLogFile(std::string fileName); // Set the log file to a new given value.
 	bool LogExists(std::string fileName); // checks if a given log file exists
 
 private:
-	std::string logFileName; // name of the log file being used
+	std::string logFileName;			// name of the log file being used
 	
-	std::string TimeStamp(); // returns a timestamp of the current time.
+	std::string TimeStamp();			// returns a timestamp of the current time.
 	
 
 };

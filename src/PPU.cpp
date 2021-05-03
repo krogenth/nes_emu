@@ -9,6 +9,7 @@
 #include ".\include\romStruct.h"
 
 #include ".\include\custom_exceptions.h"
+#include ".\include\ErrorLog.h"
 
 PPUClass::PPUClass() {
 

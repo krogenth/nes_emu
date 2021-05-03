@@ -19,6 +19,7 @@
 
 #include ".\include\Cartridge.h"
 #include ".\include\Mapper_Collection.h"
+#include ".\include\ErrorLog.h"
 
 #include ".\include\Controller.h"
 
@@ -437,14 +438,32 @@ void GUIClass::drawFileDialog() {
 
             }
            
-            
             catch (MapperException e)
             {
+                // Error Logging
+                ErrorLogClass errorLog = ErrorLogClass();
+
                 // Unsupported Mapper - show error window
                 showMapperError = true;
 
                 // Log the error with full filepath
                 errorLog.Write("Unsupported Mapper. Cannot load file: " + this->loadedFile);
+
+                //  store just the file name itself - to be used in error message
+                this->loadedFile = loadedFile.substr(loadedFile.find_last_of("\\") + 1);
+
+            }
+
+            catch (CartridgeException e)
+            {
+                // Error Logging
+                ErrorLogClass errorLog = ErrorLogClass();
+
+                // Unsupported Mapper - show error window
+                showMapperError = true;
+
+                // Log the error with full filepath
+                errorLog.Write("Cartridge error. Cannot load file: " + this->loadedFile);
 
                 //  store just the file name itself - to be used in error message
                 this->loadedFile = loadedFile.substr(loadedFile.find_last_of("\\") + 1);
@@ -464,9 +483,9 @@ void GUIClass::drawFileDialog() {
 void GUIClass::drawErrorWindow() {
 
     // Error caused by trying to load a ROM that uses an unsupported mapper
-    ImGui::Begin("Unsupported Mapper Error", &showMapperError);
+    ImGui::Begin("Error loading file", &showMapperError);
     ImGui::Text("Cannot load file: %s", this->loadedFile.c_str());
-    ImGui::Text("File uses an unsupported Mapper.");
+    ImGui::Text("Check error.txt for more information.");
     ImGui::Text("Please load a different ROM.");
     ImGui::End();
 }
