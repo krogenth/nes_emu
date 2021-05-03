@@ -7,7 +7,7 @@ ControllerClass::ControllerClass() {
 
 		std::ifstream input("controller.ini");
 
-		for (uint8_t i = 0; (i < 4) && !input.eof(); i++)
+		for (uint8_t i = 0; (i < 8) && !input.eof(); i++)
 			input >> this->buttons[i];
 
 		input.close();
@@ -19,6 +19,10 @@ ControllerClass::ControllerClass() {
 		this->buttons[1] = 1;
 		this->buttons[2] = 2;
 		this->buttons[3] = 3;
+		this->buttons[4] = 4;
+		this->buttons[5] = 5;
+		this->buttons[6] = 6;
+		this->buttons[7] = 7;
 		this->setIni();
 
 	}
@@ -58,7 +62,7 @@ void ControllerClass::setButton(int buttonIndex, uint8_t controllerButton) {
 void ControllerClass::setIni() {
 	std::fstream iniFile("controller.ini", std::ios::out | std::ios::trunc);
 	if (iniFile.is_open()) {
-		for (uint8_t i = 0; i < 4; i++) {
+		for (uint8_t i = 0; i < 8; i++) {
 			iniFile << this->buttons[i] << std::endl;
 		}
 		iniFile.close();

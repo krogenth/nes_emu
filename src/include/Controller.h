@@ -28,7 +28,7 @@ private:
 	uint8_t PISO = 0b00000000;
 	bool strobe = false;
 	GUIClass* GUI = nullptr;
-	uint8_t buttons[4];
+	uint8_t buttons[8];
 
 
 

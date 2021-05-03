@@ -1,4 +1,5 @@
 #include <tuple>
+#include <fstream>
 
 #include ".\include\GUI.h"
 
@@ -24,17 +25,20 @@
 
 GUIClass::GUIClass(std::string progName) {
 
+    this->progName = progName;
+
     //  initialize SFML window context to a default state
-    this->window.create(sf::VideoMode(256, 240), progName);
+    this->window.create(sf::VideoMode(256, 240), this->progName);
     this->window.setFramerateLimit(60);
 
     this->gameTexture.create(1280, 720);
+    this->window.setSize(sf::Vector2u(768, 720));
 
     ImGui::SFML::Init(this->window);
 
     //  initialize filebrowser for title and file type lookup
     this->filebrowser.SetTitle("Choose File");
-    this->filebrowser.SetTypeFilters({ ".nes", ".*" });
+    this->filebrowser.SetTypeFilters({ ".nes" });
 
 }
 
@@ -89,8 +93,11 @@ void GUIClass::draw() {
 
         ImGui::SFML::ProcessEvent(e);
 
-        if (e.type == sf::Event::Closed)
+        if (e.type == sf::Event::Closed) {
+
+            this->saveGame();
             this->isRendering = false;
+        }
 
     }
 
@@ -112,16 +119,34 @@ void GUIClass::draw() {
 
     if (showFileDialog)
         this->drawFileDialog();
+
     if (showControllerDialog)
         this->drawControllerDialog();
+
     if (showButtonSet[0])
         this->drawSetButtons(0);
+
     if (showButtonSet[1])
         this->drawSetButtons(1);
+
     if (showButtonSet[2])
         this->drawSetButtons(2);
+
     if (showButtonSet[3])
         this->drawSetButtons(3);
+
+    if (showButtonSet[4])
+        this->drawSetButtons(4);
+
+    if (showButtonSet[5])
+        this->drawSetButtons(5);
+
+    if (showButtonSet[6])
+        this->drawSetButtons(6);
+
+    if (showButtonSet[7])
+        this->drawSetButtons(7);
+
     this->window.clear();
     this->window.draw(sprite);
     ImGui::SFML::Render(this->window);
@@ -135,21 +160,26 @@ uint8_t GUIClass::getControllerState() {
 
     uint8_t temp = 0;
     sf::Joystick::update();
-    if (sf::Joystick::isConnected(0)) {
-         temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(0))) << 0;    //  A pressed
-         temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(1))) << 1;    //  B pressed
-         temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(2))) << 2;    //  select pressed
-         temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(3))) << 3;    //  start pressed
-         temp |= (sf::Joystick::getAxisPosition(0,sf::Joystick::Axis::PovY) > dead_zone) << 4;    //  up pressed dpad
-         temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::Y) < -dead_zone) << 4;     //  up pressed left stick
-         temp |= (sf::Joystick::getAxisPosition(0,sf::Joystick::Axis::PovY) < -dead_zone) << 5;   //  down pressed dpad
-         temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::Y) > dead_zone) << 5;   //  down pressed left stick
-         temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovX) < -dead_zone) << 6;  //  left pressed dpad
-         temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X) < -dead_zone) << 6;     //  left pressed left stick
-         temp |= (sf::Joystick::getAxisPosition(0,sf::Joystick::Axis::PovX) > dead_zone) << 7;    //  right pressed dpad
-         temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X) > dead_zone) << 7;      //  right pressed left stick
-    }
-    else {
+    if (this->window.hasFocus() || backgroundInput) {
+        if (sf::Joystick::isConnected(0)) {
+            temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(0))) << 0;    //  A pressed
+            temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(1))) << 1;    //  B pressed
+            temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(2))) << 2;    //  select pressed
+            temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(3))) << 3;    //  start pressed
+            temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovY) > dead_zone) << 4;    //  up pressed dpad
+            temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::Y) < -dead_zone) << 4;  //  up pressed left stick
+            temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(4))) << 4;   //up custom
+            temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovY) < -dead_zone) << 5;   //  down pressed dpad
+            temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::Y) > dead_zone) << 5;   //  down pressed left stick
+            temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(5))) << 5;
+            temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovX) < -dead_zone) << 6;  //  left pressed dpad
+            temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X) < -dead_zone) << 6;     //  left pressed left stick
+            temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(6))) << 6;
+            temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovX) > dead_zone) << 7;    //  right pressed dpad
+            temp |= (sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X) > dead_zone) << 7;      //  right pressed left stick
+            temp |= (sf::Joystick::isButtonPressed(0, this->controller->getButton(7))) << 7;
+        }
+
         temp |= (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) << 0;    //  A pressed
         temp |= (sf::Keyboard::isKeyPressed(sf::Keyboard::F)) << 1;    //  B pressed
         temp |= (sf::Keyboard::isKeyPressed(sf::Keyboard::T)) << 2;    //  select pressed
@@ -158,6 +188,8 @@ uint8_t GUIClass::getControllerState() {
         temp |= (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) << 5;    //  down pressed
         temp |= (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) << 6;    //  left pressed
         temp |= (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) << 7;    //  right pressed
+
+        
     }
     return temp;
 
@@ -204,6 +236,7 @@ void GUIClass::drawMenu() {
 
             if (ImGui::MenuItem("Unload ROM")) {
 
+                this->saveGame();
                 this->cartridge->unload();
                 this->loadedFile = "";
 
@@ -231,10 +264,22 @@ void GUIClass::drawMenu() {
                 this->isPaused = !this->isPaused;
 
         }
+        
+        if (ImGui::MenuItem("Reset")) {
+
+            this->saveGame();
+            this->CPU->reset();
+            this->PPU->reset();
+
+        }
        
         //  moved to sub-menu item so if user drops one menu and drags into previous Quit menu button, it does not auto-quit
-        if (ImGui::MenuItem("Quit"))
+        if (ImGui::MenuItem("Quit")) {
+
+            this->saveGame();
             this->isRendering = false;
+
+        }
 
         ImGui::EndMenu();
     }
@@ -263,10 +308,20 @@ void GUIClass::drawMenu() {
 
     }
     if (ImGui::BeginMenu("Settings")) {
-        if (ImGui::MenuItem("Set Controller Binds" ) && sf::Joystick::isConnected(0)) {
-            showControllerDialog = true;
+            if (ImGui::MenuItem("Set Controller Binds") && sf::Joystick::isConnected(0)) {
+                showControllerDialog = true;
 
-        }  
+            }
+            if(this->backgroundInput){
+            if (ImGui::MenuItem("Disable Background Input")) {
+                this->backgroundInput = !this->backgroundInput;
+            }
+        }
+        else {
+                if (ImGui::MenuItem("Enable Background Input")) {
+                    this->backgroundInput = !this->backgroundInput;
+                }
+        }
 
         ImGui::EndMenu();
     }
@@ -275,17 +330,66 @@ void GUIClass::drawMenu() {
 
 }
 
+
 void::GUIClass::drawControllerDialog() {
   
     ImGui::Begin("Controller Bindings", &showControllerDialog);  
     ImGui::Text("'A' is currently button: %d", this->controller->getButton(0));    
-    if (ImGui::Button("Rebind A")) { showButtonSet[0] = true; }
+    if (ImGui::Button("Rebind A")) {
+        for (int i = 0; i < 8; i++) {
+            showButtonSet[i] = false;
+        }
+        showButtonSet[0] = true;
+    }
     ImGui::Text("'B' is currently button: %d", this->controller->getButton(1));
-    if (ImGui::Button("Rebind B")) { showButtonSet[1] = true; }
+    if (ImGui::Button("Rebind B")) {
+        for (int i = 0; i < 8; i++) {
+            showButtonSet[i] = false;
+        }
+        showButtonSet[1] = true;
+    }
     ImGui::Text("'Select' is currently button: %d", this->controller->getButton(2));
-    if (ImGui::Button("Rebind Select")) { showButtonSet[2] = true; }
+    if (ImGui::Button("Rebind Select")) {
+        for (int i = 0; i < 8; i++) {
+            showButtonSet[i] = false;
+        }
+        showButtonSet[2] = true;
+    }
     ImGui::Text("'Start' is currently button: %d", this->controller->getButton(3));
-    if (ImGui::Button("Rebind Start")) { showButtonSet[3] = true; }
+    if (ImGui::Button("Rebind Start")) {
+        for (int i = 0; i < 8; i++) {
+            showButtonSet[i] = false;
+        }
+        showButtonSet[3] = true;
+    }
+    ImGui::Text("'Up' is currently button: %d", this->controller->getButton(4));
+    if (ImGui::Button("Rebind Up")) {
+        for (int i = 0; i < 8; i++) {
+            showButtonSet[i] = false;
+        }
+        showButtonSet[4] = true;
+    }
+    ImGui::Text("'Down' is currently button: %d", this->controller->getButton(5));
+    if (ImGui::Button("Rebind Down")) {
+        for (int i = 0; i < 8; i++) {
+            showButtonSet[i] = false;
+        }
+        showButtonSet[5] = true;
+    }
+    ImGui::Text("'Left' is currently button: %d", this->controller->getButton(6));
+    if (ImGui::Button("Rebind Left")) {
+        for (int i = 0; i < 8; i++) {
+            showButtonSet[i] = false;
+        }
+        showButtonSet[6] = true;
+    }
+    ImGui::Text("'Right' is currently button: %d", this->controller->getButton(7));
+    if (ImGui::Button("Rebind Right")) { 
+        for (int i = 0; i < 8; i++) {
+            showButtonSet[i] = false;
+        }
+        showButtonSet[7] = true; 
+    }
     if (ImGui::Button("Save To ini")) { this->controller->setIni(); }
             
     ImGui::End();          
@@ -297,7 +401,7 @@ void::GUIClass::drawSetButtons(int b) {
     case 0:
         ImGui::Begin("A Binding", &showButtonSet[0]);
         ImGui::Text("'A' is currently button: %d", this->controller->getButton(0));
-        ImGui::Text("Press new 'A' buton...");
+        ImGui::Text("Press new 'A' button...");
         for (int i = 0; i < sf::Joystick::getButtonCount(0); i++) {
             if (sf::Joystick::isButtonPressed(0, i)) {
                 this->controller->setButton(0, i);
@@ -309,7 +413,7 @@ void::GUIClass::drawSetButtons(int b) {
     case 1:
         ImGui::Begin("B Binding", &showButtonSet[1]);
         ImGui::Text("'B' is currently button: %d", this->controller->getButton(1));
-        ImGui::Text("Press new 'B' buton...");
+        ImGui::Text("Press new 'B' button...");
         for (int i = 0; i < sf::Joystick::getButtonCount(0); i++) {
             if (sf::Joystick::isButtonPressed(0, i)) {
                 this->controller->setButton(1, i);
@@ -321,7 +425,7 @@ void::GUIClass::drawSetButtons(int b) {
     case 2:
         ImGui::Begin("Select Binding", &showButtonSet[2]);
         ImGui::Text("'Select' is currently button: %d", this->controller->getButton(2));
-        ImGui::Text("Press new 'Select' buton...");
+        ImGui::Text("Press new 'Select' button...");
         for (int i = 0; i < sf::Joystick::getButtonCount(0); i++) {
             if (sf::Joystick::isButtonPressed(0, i)) {
                 this->controller->setButton(2, i);
@@ -333,10 +437,58 @@ void::GUIClass::drawSetButtons(int b) {
     case 3:
         ImGui::Begin("Start Binding", &showButtonSet[3]);
         ImGui::Text("'Start' is currently button: %d", this->controller->getButton(3));
-        ImGui::Text("Press new 'Start' buton...");
+        ImGui::Text("Press new 'Start' button...");
         for (int i = 0; i < sf::Joystick::getButtonCount(0); i++) {
             if (sf::Joystick::isButtonPressed(0, i)) {
                 this->controller->setButton(3, i);
+                i = sf::Joystick::getButtonCount(0);
+            }
+        }
+        ImGui::End();
+        break;
+    case 4:
+        ImGui::Begin("Up Binding", &showButtonSet[4]);
+        ImGui::Text("'Up' is currently button: %d", this->controller->getButton(4));
+        ImGui::Text("Press new 'Up' button...");
+        for (int i = 0; i < sf::Joystick::getButtonCount(0); i++) {
+            if (sf::Joystick::isButtonPressed(0, i)) {
+                this->controller->setButton(4, i);
+                i = sf::Joystick::getButtonCount(0);
+            }
+        }
+        ImGui::End();
+        break;
+    case 5:
+        ImGui::Begin("Down Binding", &showButtonSet[5]);
+        ImGui::Text("'Down' is currently button: %d", this->controller->getButton(5));
+        ImGui::Text("Press new 'Down' buton...");
+        for (int i = 0; i < sf::Joystick::getButtonCount(0); i++) {
+            if (sf::Joystick::isButtonPressed(0, i)) {
+                this->controller->setButton(5, i);
+                i = sf::Joystick::getButtonCount(0);
+            }
+        }
+        ImGui::End();
+        break;
+    case 6:
+        ImGui::Begin("Left Binding", &showButtonSet[6]);
+        ImGui::Text("'Left' is currently button: %d", this->controller->getButton(6));
+        ImGui::Text("Press new 'Left' buton...");
+        for (int i = 0; i < sf::Joystick::getButtonCount(0); i++) {
+            if (sf::Joystick::isButtonPressed(0, i)) {
+                this->controller->setButton(6, i);
+                i = sf::Joystick::getButtonCount(0);
+            }
+        }
+        ImGui::End();
+        break;
+    case 7:
+        ImGui::Begin("Right Binding", &showButtonSet[7]);
+        ImGui::Text("'Right' is currently button: %d", this->controller->getButton(7));
+        ImGui::Text("Press new 'Right' buton...");
+        for (int i = 0; i < sf::Joystick::getButtonCount(0); i++) {
+            if (sf::Joystick::isButtonPressed(0, i)) {
+                this->controller->setButton(7, i);
                 i = sf::Joystick::getButtonCount(0);
             }
         }
@@ -406,6 +558,9 @@ void GUIClass::drawFileDialog() {
 
         if (loadedFile.find(".nes") != std::string::npos && ((loadedFile.find_last_of(".") - loadedFile.find_last_of("\\")) > 1)) {
 
+            //  save current game first
+            this->saveGame();
+
             //  grab the file path name and load the new ROM in
             this->cartridge->storeMapper(selectMapper(this->cartridge->load(this->loadedFile)));
 
@@ -425,7 +580,15 @@ void GUIClass::drawFileDialog() {
                 this->PPU->reset();
                 uint32_t x, y;
                 std::tie(x, y) = this->PPU->getResolution();
-                this->gameTexture.create(x, y);
+                if (this->gameTexture.getSize().y != y) {
+
+                    this->window.close();
+                    this->window.create(sf::VideoMode(x, y), this->progName);
+                    this->window.setSize(sf::Vector2u(x * 3, y * 3));
+                    this->window.setFramerateLimit(this->PPU->getTVFrameRate());
+                    this->gameTexture.create(x, y);
+
+                }
 
             }
 
@@ -436,5 +599,14 @@ void GUIClass::drawFileDialog() {
         showFileDialog = false;
 
     }
+    
+}
+    
+void GUIClass::saveGame() {
 
+    std::string saveFile = this->cartridge->getSaveFile();
+    std::ofstream output(saveFile, std::ios::out | std::ios::binary);
+
+    output.write((char*)this->cartridge->get_prg_ram(), this->cartridge->get_prg_ram_size());
+    
 }
