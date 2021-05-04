@@ -45,6 +45,12 @@
     <ClCompile Include="..\..\..\src\mappers\Mapper007.cpp">
       <Filter>Mappers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\custom_exceptions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\ErrorLog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\include\Cartridge.h">
@@ -79,6 +85,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\include\mappers\Mapper007.h">
       <Filter>Mappers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\include\ErrorLog.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

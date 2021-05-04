@@ -9,6 +9,7 @@
 #include ".\include\romStruct.h"
 
 #include ".\include\custom_exceptions.h"
+#include ".\include\ErrorLog.h"
 
 PPUClass::PPUClass() {
 
@@ -160,10 +161,12 @@ std::tuple<uint32_t, uint32_t> PPUClass::getResolution() {
 		return std::make_tuple(this->tvResolutionX[this->cartridge->getTV()], this->tvResolutionY[this->cartridge->getTV()]);
 
 	}
-	catch (const MapperException& e) {
+	catch (const CartridgeException& e) {
 
-		// Can be replaced with error logging once merged.
-		std::cout << e.what() << '\n';		//	placeholder until a better solution is created, we should really use a log file instead
+		ErrorLogClass log = ErrorLogClass();
+		
+		log.Write("Cannot get resolution from cartridge.");
+
 		return std::make_tuple(0, 0);
 
 	}
@@ -177,10 +180,11 @@ uint32_t PPUClass::getTVFrameRate() {
 		return this->tvFrameRate[this->cartridge->getTV()];
 
 	}
-	catch (const MapperException& e) {
+	catch (const CartridgeException& e) {
 
-		// Can be replaced with error logging once merged.
-		std::cout << e.what() << '\n';		//	placeholder until a better solution is created, we should really use a log file instead
+		ErrorLogClass log = ErrorLogClass();
+
+		log.Write("Cannot get TV frame rate from cartridge.");
 		return 0;
 
 	}

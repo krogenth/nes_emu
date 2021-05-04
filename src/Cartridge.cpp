@@ -13,7 +13,7 @@
 
 	std::ifstream input(filename, std::ios::in | std::ios::binary);
 	if (!input.is_open())
-		throw CartridgeException("Cartridge file not found");
+		throw CartridgeException("Cartridge file: " + filename + " not found");
 
 	romStruct* rom = new romStruct;
 	rom->header = readRaw<romHeaderStruct>(input);
@@ -24,7 +24,7 @@
 
 		input.close();
 		delete rom;
-		throw CartridgeException("Cartridge not NES format");
+		throw CartridgeException("Cartridge not NES format. HeaderID: " + std::string(rom->header.ID));	
 
 	}
 

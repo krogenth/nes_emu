@@ -14,6 +14,7 @@
 #include ".\CPU.h"
 #include ".\PPU.h"
 #include ".\Cartridge.h"
+#include ".\ErrorLog.h"
 
 #include ".\imfilebrowser.h"
 
@@ -22,8 +23,8 @@ struct MemoryEditor;
 static bool showSelectDebug = false;
 static bool showFileDialog = false;
 static bool showControllerDialog = false;
-static bool showButtonSet[]{ false, false, false, false, false, false, false, false};
-
+static bool showButtonSet[]{ false, false, false, false};
+static bool showMapperError = false;
 
 //	structs to contain everything needed to create the windows for the hex viewers
 //	split up based on component, because of the requirement for function pointers
@@ -121,6 +122,7 @@ private:
 	CartridgeClass* cartridge = nullptr;
 	ControllerClass* controller = nullptr;
 
+
 	//	used to draw the menubar of the main window, called by draw
 	void drawMenu();
 	void drawSelectDebug();
@@ -128,6 +130,7 @@ private:
 	void drawFileDialog();
 	void drawControllerDialog();
 	void drawSetButtons(int b);
+	void drawErrorWindow();
 
 	void saveGame();
 

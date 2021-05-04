@@ -6,23 +6,21 @@
 class CartridgeException : public std::runtime_error {
 
 public:
-	CartridgeException(const std::string& message) throw() : std::runtime_error(message) {
+	CartridgeException(const std::string& message)  throw(); //: std::runtime_error(message) {}
+	
 
-
-
-	}
-
+private:
+	
 };
 
 class MapperException : public std::runtime_error {
 
 public:
-	MapperException(const std::string& message) throw() : std::runtime_error(message) {
+	MapperException(const std::string& message) throw(); // : std::runtime_error(message);
 
 
-
-	}
-
+private:
+	
 };
 
 #endif
