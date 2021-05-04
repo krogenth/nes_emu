@@ -15,7 +15,7 @@ Mapper002::Mapper002(romStruct* _rom) : MapperClass(_rom) {
 [[nodiscard]] uint8_t Mapper002::prg_read(uint16_t& address) {
 
 	if (address < 0x8000)
-		throw new MapperException("Mapper does not support PRG RAM");
+		return 0;
 	else if (address < 0xC000)
 		return this->rom->prg_rom.at(((size_t)address - 0x8000) + ((size_t)this->prg_rom_window_1 * 0x4000));
 	else
@@ -37,7 +37,7 @@ Mapper002::Mapper002(romStruct* _rom) : MapperClass(_rom) {
 uint8_t Mapper002::prg_write(uint16_t& address, const uint8_t& data) {
 
 	if (address < 0x8000)
-		throw new MapperException("Mapper does not support PRG RAM");
+		return 0;
 
 	//	this follows the UNROM specification, which uses only the first 3 bits to select the PRG ROM section to window
 	if(address & 0x8000)

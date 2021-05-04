@@ -11,7 +11,7 @@ Mapper003::Mapper003(romStruct* _rom) : MapperClass(_rom) {
 [[nodiscard]] uint8_t Mapper003::prg_read(uint16_t& address) {
 
 	if (address < 0x8000)
-		throw new MapperException("Mapper does not support PRG RAM");
+		return 0;
 	else
 		return this->rom->prg_rom.at(((size_t)address - 0x8000) & ((this->rom->prg_rom_chunks > 1) ? 0x7FFF : 0x3FFF));
 
@@ -29,8 +29,8 @@ Mapper003::Mapper003(romStruct* _rom) : MapperClass(_rom) {
 
 uint8_t Mapper003::prg_write(uint16_t& address, const uint8_t& data) {
 
-	if(address < 0x8000)
-		throw new MapperException("Mapper does not support PRG RAM");
+	if (address < 0x8000)
+		return 0;
 	
 	//	follows CNROM format for selecting correct bank to window to
 	return this->chr_rom_window_1 = data & 0x03;
