@@ -25,6 +25,8 @@ public:
 	mirrorEnum getMirror();
 	tvEnum getTV();
 
+	std::string getSaveFile() { return this->saveFile; }
+
 	void* get_prm_rom();
 	size_t get_prm_rom_size();
 
@@ -40,7 +42,7 @@ public:
 
 private:
 	MapperClass* mapper = nullptr;
-	
+	std::string saveFile = "";
 
 };
 

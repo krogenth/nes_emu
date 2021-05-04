@@ -98,9 +98,11 @@ private:
 	bool isRendering = true;
 	bool isPaused = false;
 	bool showDebug = false;
+	bool backgroundInput = false;
 
 	uint32_t delay = 0;
 
+	std::string progName = "";
 	std::string loadedFile = "";
 
 	ImGui::FileBrowser filebrowser;
@@ -130,7 +132,7 @@ private:
 	void drawSetButtons(int b);
 	void drawErrorWindow();
 
-	
+	void saveGame();
 
 };
 
