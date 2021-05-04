@@ -23,7 +23,7 @@ struct MemoryEditor;
 static bool showSelectDebug = false;
 static bool showFileDialog = false;
 static bool showControllerDialog = false;
-static bool showButtonSet[]{ false, false, false, false};
+static bool showButtonSet[8] = { false, false, false, false, false, false, false, false }; // NES controller has 8 buttons
 static bool showMapperError = false;
 
 //	structs to contain everything needed to create the windows for the hex viewers
@@ -132,6 +132,7 @@ private:
 	void drawSetButtons(int b);
 	void drawErrorWindow();
 
+	// Creates a file to store saved game data
 	void saveGame();
 
 };

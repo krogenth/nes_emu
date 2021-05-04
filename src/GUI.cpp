@@ -97,6 +97,7 @@ void GUIClass::draw() {
         if (e.type == sf::Event::Closed) {
 
             this->saveGame();
+
             this->isRendering = false;
         }
 
@@ -269,14 +270,18 @@ void GUIClass::drawMenu() {
 
         }
         
-        if (ImGui::MenuItem("Reset")) {
+        if (this->isLoaded()) {
 
-            this->saveGame();
-            this->CPU->reset();
-            this->PPU->reset();
+            // Only allow reset when a ROM is loaded
+            // Resetting without a ROM loaded would crash the program
+            if (ImGui::MenuItem("Reset")) {
 
+                this->saveGame();
+                this->CPU->reset();
+                this->PPU->reset();
+
+            }
         }
-       
         //  moved to sub-menu item so if user drops one menu and drags into previous Quit menu button, it does not auto-quit
         if (ImGui::MenuItem("Quit")) {
 
@@ -564,7 +569,7 @@ void GUIClass::drawFileDialog() {
 
             //  save current game first
             this->saveGame();
-
+            
             //  grab the file path name and load the new ROM in
             try {
                 this->cartridge->storeMapper(selectMapper(this->cartridge->load(this->loadedFile)));
@@ -652,10 +657,13 @@ void GUIClass::drawErrorWindow() {
 
 void GUIClass::saveGame() {
 
-    std::string saveFile = this->cartridge->getSaveFile();
-    std::ofstream output(saveFile, std::ios::out | std::ios::binary);
+    // Only save if a ROM is loaded
+    if (this->isLoaded()) {
 
-    output.write((char*)this->cartridge->get_prg_ram(), this->cartridge->get_prg_ram_size());
-    
+        std::string saveFile = this->cartridge->getSaveFile();
+        std::ofstream output(saveFile, std::ios::out | std::ios::binary);
+
+        output.write((char*)this->cartridge->get_prg_ram(), this->cartridge->get_prg_ram_size());
+    }
 }
 
