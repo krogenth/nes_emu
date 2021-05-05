@@ -110,7 +110,7 @@ protected:
 	ControllerClass* controller = nullptr;
 
 	//	for handling the differences between NTSC and PAL versions of the 6502, which can be seen here: https://wiki.nesdev.com/w/index.php/Cycle_reference_chart#CPU_cycle_counts
-	uint32_t tvFrameCycleCount[2] = {29781, 33248 };
+	uint32_t tvFrameCycleCount[2] = { 29781, 33248 };
 
 	//	used in debug mode for logging
 #ifdef CPU_LOGGING

@@ -1,3 +1,7 @@
+// For timestamping error log messages
+#include <ctime>
+#include <fstream>
+
 // Implementation for Error Logging in the NES EMU
 #include ".\include\ErrorLog.h"
 

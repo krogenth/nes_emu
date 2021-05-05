@@ -2,10 +2,6 @@
 #define ERRORLOG_H
 
 #include <string>
-#include <fstream>
-
-// For timestamping error log messages
-#include<time.h>
 
 const std::string DEFAULT_LOG_FILE_NAME = "error.txt";
 
