@@ -13,3 +13,6 @@
 [submodule "libs/imgui-sfml"]
 	path = libs/imgui-sfml
 	url = https://github.com/eliasdaler/imgui-sfml
+[submodule "libs/Nes_Snd_Emu"]
+	path = libs/Nes_Snd_Emu
+	url = https://github.com/jamesathey/Nes_Snd_Emu.git
