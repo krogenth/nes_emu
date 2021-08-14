@@ -1,7 +1,11 @@
-#include ".\include\Controller.h"
-#include ".\include\GUI.h"
 #include <fstream>
 #include <iostream>
+
+#include ".\SFML\Window\Keyboard.hpp"
+
+#include ".\include\Controller.h"
+#include ".\include\GUI.h"
+
 ControllerClass::ControllerClass() {
 
 	if (std::filesystem::exists("controller.ini")) {
@@ -19,14 +23,24 @@ ControllerClass::ControllerClass() {
 	}
 	else {
 
-		this->controllerButtons[0] = 0;
-		this->controllerButtons[1] = 1;
-		this->controllerButtons[2] = 2;
-		this->controllerButtons[3] = 3;
-		this->controllerButtons[4] = 4;
-		this->controllerButtons[5] = 5;
-		this->controllerButtons[6] = 6;
-		this->controllerButtons[7] = 7;
+		this->controllerButtons[0] = 0;		//	A
+		this->controllerButtons[1] = 1;		//	B
+		this->controllerButtons[2] = 2;		//	Select
+		this->controllerButtons[3] = 3;		//	Start
+		this->controllerButtons[4] = 4;		//	Up
+		this->controllerButtons[5] = 5;		//	Down
+		this->controllerButtons[6] = 6;		//	Left
+		this->controllerButtons[7] = 7;		//	Right
+
+		this->keyboardButtons[0] = sf::Keyboard::Key::R;	//	A
+		this->keyboardButtons[1] = sf::Keyboard::Key::F;	//	B
+		this->keyboardButtons[2] = sf::Keyboard::Key::T;	//	Select
+		this->keyboardButtons[3] = sf::Keyboard::Key::G;	//	Start
+		this->keyboardButtons[4] = sf::Keyboard::Key::W;	//	Up
+		this->keyboardButtons[5] = sf::Keyboard::Key::S;	//	Down
+		this->keyboardButtons[6] = sf::Keyboard::Key::A;	//	Left
+		this->keyboardButtons[7] = sf::Keyboard::Key::D;	//	Right
+
 		this->setIni();
 
 	}

@@ -332,10 +332,11 @@ void::GUIClass::drawSetButtons() {
 
 	ImGui::Begin("Set Input", &showInputDialog);
 
+	ImVec2 buttonSize(80.f, 0.f);
+
 	for (uint8_t button = 0; button < 8; button++) {
 
-
-		if (ImGui::Button(("Set " + nesControllerButtons[button]).c_str()))
+		if (ImGui::Button(("Set " + nesControllerButtons[button]).c_str(), buttonSize))
 			this->buttonIndex = button;
 		ImGui::SameLine();
 		ImGui::Text("%s: %d", &nesControllerButtons[button][0], (sf::Joystick::isConnected(0)) ? this->controller->getControllerButton(button) : this->controller->getKeyboardButtons(button));
