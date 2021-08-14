@@ -18,5 +18,10 @@ build_script:
   - cd .\build
   - cmake -G "Visual Studio 16 2019" ..\
   - MSBuild .\SFML.sln
+  - cd ..\..\Nes_Snd_Emu
+  - mkdir .\build
+  - cd .\build
+  - cmake -G "Visual Studio 16 2019" ..\
+  - MSBuild Nes_Snd_Emu.sln
   - cd ..\..\..
   - MSBuild .\vs\nes.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
