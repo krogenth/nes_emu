@@ -22,8 +22,9 @@ struct MemoryEditor;
 
 static bool showSelectDebug = false;
 static bool showFileDialog = false;
-static bool showControllerDialog = false;
-static bool showButtonSet[8] = { false, false, false, false, false, false, false, false }; // NES controller has 8 buttons
+static bool showInputDialog = false;
+static bool showButtonSet[] = { false, false, false, false, false, false, false, false }; // NES controller has 8 buttons
+static std::string nesControllerButtons[] = { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
 static bool showMapperError = false;
 
 //	structs to contain everything needed to create the windows for the hex viewers
@@ -102,6 +103,8 @@ private:
 
 	uint32_t delay = 0;
 
+	uint8_t buttonIndex = 0;
+
 	std::string progName = "";
 	std::string loadedFile = "";
 
@@ -122,15 +125,16 @@ private:
 	CartridgeClass* cartridge = nullptr;
 	ControllerClass* controller = nullptr;
 
-
 	//	used to draw the menubar of the main window, called by draw
 	void drawMenu();
 	void drawSelectDebug();
 	void drawDebug();
 	void drawFileDialog();
-	void drawControllerDialog();
-	void drawSetButtons(int b);
+	void drawSetButtons();
 	void drawErrorWindow();
+
+	//	helper function to handle input reading
+	void readInput(uint8_t buttonIndex);
 
 	// Creates a file to store saved game data
 	void saveGame();
