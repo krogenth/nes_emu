@@ -5,6 +5,7 @@
 #include "..\..\src\include\Cartridge.h"
 #include "..\..\src\include\Controller.h"
 #include "..\..\src\include\GUI.h"
+#include "nes_apu\Nes_Apu.h"
 
 #include "..\..\src\include\custom_exceptions.h"
 
@@ -16,6 +17,7 @@ int main(int argc, char* argv[]) {
 	PPUClass ppu;
 	ControllerClass controller;
 	CartridgeClass cartridge;
+	Nes_Apu apu;
 	GUIClass gui(PROG_NAME);
 	
 
@@ -24,6 +26,7 @@ int main(int argc, char* argv[]) {
 	cpu.loadPPU(&ppu);
 	cpu.loadCartridge(&cartridge);
 	cpu.loadController(&controller);
+	cpu.loadAPU(&apu);
 
 	ppu.loadCartridge(&cartridge);
 	ppu.loadGUI(&gui);

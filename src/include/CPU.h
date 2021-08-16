@@ -10,7 +10,7 @@
 #endif
 
 #include ".\PPU.h"
-#include ".\APU.h"
+#include "nes_apu\Nes_Apu.h"
 #include ".\Controller.h"
 #include ".\Cartridge.h"
 
@@ -60,7 +60,7 @@ public:
 	//	used to load various components into CPU
 	void loadCartridge(CartridgeClass* _cartridge) { this->cartridge = _cartridge; }
 	void loadPPU(PPUClass* _PPU) { this->PPU = _PPU; }
-	void loadAPU(APUClass* _APU) { this->APU = _APU; }
+	void loadAPU(Nes_Apu* _APU) { this->APU = _APU; }
 	void loadController(ControllerClass* _controller) { this->controller = _controller; }
 
 	uint64_t elapsedTime() { return this->getFrameCycles() - this->remainingCycles; }
@@ -79,7 +79,7 @@ public:
 
 	uint32_t getFrameCycles() { return this->tvFrameCycleCount[this->cartridge->getTV()]; }
 
-	//int readDMC(void*, cpu_addr_t address) { return this->access(address); }
+	int readDMC(void*, uint16_t address) { return this->access(address); }
 
 	void* get_cpu_ram() { return (void*)&(this->RAM.at(0)); }
 	size_t get_cpu_ram_size() { return this->RAM.size(); }
@@ -90,12 +90,23 @@ public:
 	typedef void* (CPUClass::*getCPUData)(void);
 	typedef size_t(CPUClass::*getCPUDataSize)(void);
 
+	uint64_t getCycleCount() { return this->cycleCount; }
+	uint64_t getRemainingCycles() { return this->remainingCycles; }
+
+
 protected:
 	//	registers
 	CPU_Registers registers;
 
 	uint64_t cycleCount = 0;
 	int64_t remainingCycles = 0;
+
+	Nes_Apu::nes_time_t cpu_end_time;
+	Nes_Apu::nes_time_t cpu_time;
+	
+
+	const static size_t out_size = 4096;
+	blip_sample_t out_buf [out_size];
 
 	std::vector<uint8_t> RAM;
 
@@ -106,8 +117,9 @@ protected:
 	//	store pointers to various compnents for calls
 	CartridgeClass* cartridge = nullptr;
 	PPUClass* PPU = nullptr;
-	APUClass* APU = nullptr;
+	Nes_Apu* APU = nullptr;
 	ControllerClass* controller = nullptr;
+
 
 	//	for handling the differences between NTSC and PAL versions of the 6502, which can be seen here: https://wiki.nesdev.com/w/index.php/Cycle_reference_chart#CPU_cycle_counts
 	uint32_t tvFrameCycleCount[2] = { 29781, 33248 };
@@ -141,6 +153,11 @@ protected:
 	//	used to manage interrupts that can be sent to the CPU
 	void handleNMI();
 	void handleIRQ();
+
+	// APU IRQ stuff
+	Nes_Apu::nes_time_t earliest_irq_before(Nes_Apu::nes_time_t end_time);
+	void irq_changed(void*);
+	
 
 	//	to access the CPU stack address space(this is the second page of the CPU RAM space, 0x0100 to 0x01FF)
 	inline void push(uint8_t data) { this->cycle(); this->access(0x0100 + (this->registers.reg_SP--), data, true); }
@@ -241,5 +258,6 @@ protected:
 	template<addrMode mode> void BRK();
 
 };
+
 
 #endif

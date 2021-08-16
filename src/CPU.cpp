@@ -297,6 +297,17 @@ uint8_t CPUClass::access(uint16_t address, uint8_t data, bool isWrite) {
 			return this->PPU->read(address);
 
 	}
+	else if (address >= 0x4000 && address <= 0x4013) {
+		if (isWrite) {
+			this->APU->write_register(getCycleCount(), address, data);
+		}
+		else {
+			if (address == APU->status_addr) {
+				cpu_time = getCycleCount();
+				return this->APU->read_status(cpu_time);
+			}
+		}
+	}
 	else if (address == 0x4014) {
 
 		//	PPU OAM DMA, can only write to this, see: https://wiki.nesdev.com/w/index.php/PPU_registers#OAM_DMA_.28.244014.29_.3E_write
@@ -319,8 +330,16 @@ uint8_t CPUClass::access(uint16_t address, uint8_t data, bool isWrite) {
 
 	}
 	else if (address == 0x4015) {
-
 		//	APU access
+		if (isWrite) {
+			this->APU->write_register(getCycleCount(), address, data);
+		}
+		else {
+			if (address == APU->status_addr) {
+				cpu_time = getCycleCount();
+				return this->APU->read_status(cpu_time);
+			}
+		}
 
 	}
 	else if (address == 0x4016) {
@@ -342,7 +361,9 @@ uint8_t CPUClass::access(uint16_t address, uint8_t data, bool isWrite) {
 
 		//	joystick 2 access
 		//	for now, we aren't even considering joystick 2
-
+		if (isWrite) {
+			APU->write_register(getCycleCount(), address, data);
+		}
 	}
 	else if (address <= 0x401F) {
 
@@ -388,3 +409,4 @@ void CPUClass::handleIRQ() {
 	this->registers.reg_PC = (uint16_t)this->access(0xFFFE) | ((uint16_t)this->access(0xFFFF) << 8);
 
 }
+
