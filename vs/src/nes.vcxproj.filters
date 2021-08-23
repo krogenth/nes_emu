@@ -45,9 +45,6 @@
     <ClCompile Include="..\..\src\mappers\Mapper003.cpp">
       <Filter>Mappers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\APU.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\PPU.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -114,9 +111,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\include\CPU_Opcodes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\include\APU.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\include\PPU.h">

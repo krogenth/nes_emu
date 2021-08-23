@@ -164,7 +164,6 @@
     <ClCompile Include="..\..\libs\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\libs\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\libs\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="..\..\src\APU.cpp" />
     <ClCompile Include="..\..\src\Cartridge.cpp" />
     <ClCompile Include="..\..\src\Controller.cpp" />
     <ClCompile Include="..\..\src\CPU.cpp" />
@@ -190,7 +189,6 @@
     <ClInclude Include="..\..\libs\imgui\imstb_rectpack.h" />
     <ClInclude Include="..\..\libs\imgui-filebrowser\imfilebrowser.h" />
     <ClInclude Include="..\..\libs\imgui_club\imgui_memory_editor\imgui_memory_editor.h" />
-    <ClInclude Include="..\..\src\include\APU.h" />
     <ClInclude Include="..\..\src\include\Cartridge.h" />
     <ClInclude Include="..\..\src\include\Controller.h" />
     <ClInclude Include="..\..\src\include\CPU.h" />
